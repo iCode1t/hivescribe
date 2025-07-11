@@ -1,6 +1,6 @@
 
 # 🐝 HIVESCRIBE
-A 2D single player game. Play, Learn, Earn and Evolve.
+A 2D single player game on Solana Utilizing the Honeycomb Protocol. Play, Learn, Earn and Evolve.
 
 
 ![HIVESCRIBE Banner](./HIVESCRIBE.png)
