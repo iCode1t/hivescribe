@@ -135,3 +135,7 @@ hivescribe/
 └── vite.config.js
 
 
+## 💬 Contact
+
+**Built by [@icode1t](https://x.com/big_ola_?s=21)**  
+GitHub: [github.com/iCode1t/hivescribe](https://github.com/iCode1t/hivescribe)
