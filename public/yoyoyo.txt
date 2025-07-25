@@ -1,0 +1,1678 @@
+Let's go over this page and please break it down to me in a way that you know partakes to my project. Mind you my project is just a quiz game and the only thing i want from hoenycomb is there mission features that i can implement. so now i'm sending it to you directly from the documentations project and mission section so you can go over it and break it down for me so we will know what to do 
+
+it is about 1600plus so i will be sending it in chucks after one another
+Projects
+Pre-requisites
+Before following this guide, make sure you go through our getting started guide and set up your development environment.
+
+If you need any help at any point, please get in touch.
+
+What are projects
+Projects are the core of the Honeycomb Protocol. Essentially, a project represents an app. It can be game or it can any app that takes advantage of the blockchain.
+
+If you'd like to integrate any app or game with Honeycomb Protocol, you'll need to create a project. That project will have its own public key and will essentially represent your app on the blockchain.
+
+Once you have a project, you can create user profiles, resources, characters, missions, and other on-chain assets under it. Honeycomb Protocol is designed to be modular, so you can pick and choose the modules you need in your app.
+
+Creating a project 
+Here's how you can create a project on Honeycomb Protocol.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createCreateProjectTransaction: {
+    project: projectAddress, // This is the project address once it'll be created
+    tx: txResponse, // This is the transaction response, you'll need to sign and send this transaction
+  },
+} = await client.createCreateProjectTransaction({
+  name: "Test Project", // Name of the project
+  authority: authorityPublicKey, // Public key of the project authority, this authority has complete control over the project
+  payer: payerPublicKey, // Optional public key of the payer, the payer pays the transaction fees for creating this project
+  profileDataConfig: {
+    achievements: [ // Specify an array of achievements that you want to be able to set on your users' profiles
+      "Pioneer"
+    ],
+    customDataFields: [ // Specify an array of custom data fields that you want to be able to set on your users' profiles
+      "NFTs owned",
+    ]
+  }
+});
+
+
+For more information on trustedActions, see the Honeycomb Trusted Actions documentation.
+
+Project driver
+The project driver's keypair can be used to sign a project's transactions when neither the user nor the project admin's signature is required.
+
+In such instances, the project driver’s keypair provides the necessary authorization, ensuring that transactions can execute without direct interaction from the user or admin.
+
+Changing the project driver 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const { 
+  createChangeProjectDriverTransaction: txResponse, // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createChangeProjectDriverTransaction({
+  authority: adminPublicKey.toString(), // Provide the project authority's public key
+  project: projectAddress.toString(), // The project's public key
+  driver: newDriverAddress.toString(), // The new driver's public key
+  payer: payerPublicKey.toString() // Optional, the transaction payer's public key
+});
+
+
+Delegates
+A project's authority has complete control over that project. But sometimes, you may want to give another account the ability to act on your behalf. This is where delegates come in.
+
+Honeycomb Protocol lets you define delegate authorities that can make certain changes to your project without having full control over it. You, as the project authority, will get to fine-tune the permissions you want to give your delegates.
+
+Creating a delegate authority 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+import { HiveControlPermissionInput } from '@honeycomb-protocol/edge-client';
+
+const {
+  createCreateDelegateAuthorityTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createCreateDelegateAuthorityTransaction({
+  authority: adminPublicKey.toString(),
+  delegate: delegatePublicAddress.toString(),
+  project: projectAddress.toString(),
+  payer: txPayerPublicKey.toString(), // Optional, the transaction payer's public key
+  serviceDelegations: {
+      HiveControl: [ // Put the service name here, for example: HiveControl
+        {
+          // Each service's permissions enum can be imported from @honeycomb-protocol/edge-client
+          permission: HiveControlPermissionInput.ManageProjectDriver,
+          // In some cases an index will also be required in this object, for example: index: 0
+        }
+      ]
+    }
+});
+
+
+Modifying a delegate authority 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createModifyDelegationTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createModifyDelegationTransaction({
+  authority: adminPublicKey.toString(), // Provide the project authority's public key
+  project: projectAddress.toString(), // The project's public key
+  delegate: delegatePublicKey.toString(), // The delegate's public key
+  modifyDelegation: {
+    delegation: {
+      HiveControl: {
+        permission: HiveControlPermissionInput.ManageProjectDriver,
+      },
+    }
+  }
+});
+
+
+Badges
+Badges are essentially achievements that users can earn in your app. But you already define an array of achievements in the profileDataConfig when creating a project, right? So what's the difference between badges and achievements?
+
+There are two key differences:
+
+Badges can be timed, with the start and end times of a badge defined within the badge account in Unix format, meaning your users will only be able to claim them within the start and end time of a badge. Outside of that window (if a window has been defined) the transaction will automatically fail.
+In order to get a badge, your users don't need the transaction to be signed by the project authority. If you assign an achievement (from the profileDataConfig's achievements array) to a user, the project authority needs to sign the transaction. Essentially, a badge is claimable with just the user's signing for the transaction.
+Create a badge 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+import { BadgesCondition } from '@honeycomb-protocol/edge-client';
+
+const {
+  createCreateBadgeCriteriaTransaction: {
+    blockhash,
+    lastValidBlockHeight,
+    transaction,
+  },
+} = await client.createCreateBadgeCriteriaTransaction({
+  args: {
+    authority: authorityPublicKey, // Project authority public key
+    projectAddress: projectAddress, // Project public key
+    payer: payerPublicKey, // Optional transaction payer public key
+    badgeIndex: 0, // Badge index as an integer, used to identify the badge
+    condition: BadgesCondition.Public, // Badge condition, only Public is available for now
+    startTime: 0, // Optional start time, UNIX timestamp
+    endTime: 0, // Optional end time, UNIX timestamp
+  },
+});
+
+
+Update a badge 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+import { BadgesCondition } from '@honeycomb-protocol/edge-client';
+
+const {
+  createUpdateBadgeCriteriaTransaction: {
+    blockhash,
+    lastValidBlockHeight,
+    transaction,
+  },
+} = await client.createUpdateBadgeCriteriaTransaction({
+  args: {
+    authority: authorityPublicKey, // Project authority public key
+    projectAddress: projectAddress, // Project public key
+    payer: payerPublicKey, // Optional transaction payer public key
+    criteriaIndex: 0, // Badge index as an integer, used to identify the badge (when adding a badge you'll use this index)
+    condition: BadgesCondition.Public, // Badge condition, only Public is available for now
+    startTime: 0, // Optional start time, UNIX timestamp
+    endTime: 0, // Optional end time, UNIX timestamp
+  },
+});
+
+
+Give/assign a badge to a user profile 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+import { BadgesCondition } from '@honeycomb-protocol/edge-client';
+
+const { createClaimBadgeCriteriaTransaction: {
+  blockhash,
+  lastValidBlockHeight,
+  transaction,
+} } =
+  await client.createClaimBadgeCriteriaTransaction({
+    args: {
+      profileAddress: profileAddress, // User profile public key, this profile will be assigned the badge
+      projectAddress: projectAddress, // Project public key
+      proof: BadgesCondition.Public, // Proof of the badge, only Public is available for now
+      payer: userPublicKey.toString(), // Transaction payer public key
+      criteriaIndex: 0, // Badge index as an integer, used to identify the badge (the badge that matches this index will be added to the profile)
+    },
+  });
+
+
+Edit this pageProjects
+Pre-requisites
+Before following this guide, make sure you go through our getting started guide and set up your development environment.
+
+If you need any help at any point, please get in touch.
+
+What are projects
+Projects are the core of the Honeycomb Protocol. Essentially, a project represents an app. It can be game or it can any app that takes advantage of the blockchain.
+
+If you'd like to integrate any app or game with Honeycomb Protocol, you'll need to create a project. That project will have its own public key and will essentially represent your app on the blockchain.
+
+Once you have a project, you can create user profiles, resources, characters, missions, and other on-chain assets under it. Honeycomb Protocol is designed to be modular, so you can pick and choose the modules you need in your app.
+
+Creating a project 
+Here's how you can create a project on Honeycomb Protocol.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createCreateProjectTransaction: {
+    project: projectAddress, // This is the project address once it'll be created
+    tx: txResponse, // This is the transaction response, you'll need to sign and send this transaction
+  },
+} = await client.createCreateProjectTransaction({
+  name: "Test Project", // Name of the project
+  authority: authorityPublicKey, // Public key of the project authority, this authority has complete control over the project
+  payer: payerPublicKey, // Optional public key of the payer, the payer pays the transaction fees for creating this project
+  profileDataConfig: {
+    achievements: [ // Specify an array of achievements that you want to be able to set on your users' profiles
+      "Pioneer"
+    ],
+    customDataFields: [ // Specify an array of custom data fields that you want to be able to set on your users' profiles
+      "NFTs owned",
+    ]
+  }
+});
+
+
+For more information on trustedActions, see the Honeycomb Trusted Actions documentation.
+
+Project driver
+The project driver's keypair can be used to sign a project's transactions when neither the user nor the project admin's signature is required.
+
+In such instances, the project driver’s keypair provides the necessary authorization, ensuring that transactions can execute without direct interaction from the user or admin.
+
+Changing the project driver 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const { 
+  createChangeProjectDriverTransaction: txResponse, // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createChangeProjectDriverTransaction({
+  authority: adminPublicKey.toString(), // Provide the project authority's public key
+  project: projectAddress.toString(), // The project's public key
+  driver: newDriverAddress.toString(), // The new driver's public key
+  payer: payerPublicKey.toString() // Optional, the transaction payer's public key
+});
+
+
+Delegates
+A project's authority has complete control over that project. But sometimes, you may want to give another account the ability to act on your behalf. This is where delegates come in.
+
+Honeycomb Protocol lets you define delegate authorities that can make certain changes to your project without having full control over it. You, as the project authority, will get to fine-tune the permissions you want to give your delegates.
+
+Creating a delegate authority 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+import { HiveControlPermissionInput } from '@honeycomb-protocol/edge-client';
+
+const {
+  createCreateDelegateAuthorityTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createCreateDelegateAuthorityTransaction({
+  authority: adminPublicKey.toString(),
+  delegate: delegatePublicAddress.toString(),
+  project: projectAddress.toString(),
+  payer: txPayerPublicKey.toString(), // Optional, the transaction payer's public key
+  serviceDelegations: {
+      HiveControl: [ // Put the service name here, for example: HiveControl
+        {
+          // Each service's permissions enum can be imported from @honeycomb-protocol/edge-client
+          permission: HiveControlPermissionInput.ManageProjectDriver,
+          // In some cases an index will also be required in this object, for example: index: 0
+        }
+      ]
+    }
+});
+
+
+Modifying a delegate authority 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createModifyDelegationTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createModifyDelegationTransaction({
+  authority: adminPublicKey.toString(), // Provide the project authority's public key
+  project: projectAddress.toString(), // The project's public key
+  delegate: delegatePublicKey.toString(), // The delegate's public key
+  modifyDelegation: {
+    delegation: {
+      HiveControl: {
+        permission: HiveControlPermissionInput.ManageProjectDriver,
+      },
+    }
+  }
+});
+
+
+Badges
+Badges are essentially achievements that users can earn in your app. But you already define an array of achievements in the profileDataConfig when creating a project, right? So what's the difference between badges and achievements?
+
+There are two key differences:
+
+Badges can be timed, with the start and end times of a badge defined within the badge account in Unix format, meaning your users will only be able to claim them within the start and end time of a badge. Outside of that window (if a window has been defined) the transaction will automatically fail.
+In order to get a badge, your users don't need the transaction to be signed by the project authority. If you assign an achievement (from the profileDataConfig's achievements array) to a user, the project authority needs to sign the transaction. Essentially, a badge is claimable with just the user's signing for the transaction.
+Create a badge 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+import { BadgesCondition } from '@honeycomb-protocol/edge-client';
+
+const {
+  createCreateBadgeCriteriaTransaction: {
+    blockhash,
+    lastValidBlockHeight,
+    transaction,
+  },
+} = await client.createCreateBadgeCriteriaTransaction({
+  args: {
+    authority: authorityPublicKey, // Project authority public key
+    projectAddress: projectAddress, // Project public key
+    payer: payerPublicKey, // Optional transaction payer public key
+    badgeIndex: 0, // Badge index as an integer, used to identify the badge
+    condition: BadgesCondition.Public, // Badge condition, only Public is available for now
+    startTime: 0, // Optional start time, UNIX timestamp
+    endTime: 0, // Optional end time, UNIX timestamp
+  },
+});
+
+
+Update a badge 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+import { BadgesCondition } from '@honeycomb-protocol/edge-client';
+
+const {
+  createUpdateBadgeCriteriaTransaction: {
+    blockhash,
+    lastValidBlockHeight,
+    transaction,
+  },
+} = await client.createUpdateBadgeCriteriaTransaction({
+  args: {
+    authority: authorityPublicKey, // Project authority public key
+    projectAddress: projectAddress, // Project public key
+    payer: payerPublicKey, // Optional transaction payer public key
+    criteriaIndex: 0, // Badge index as an integer, used to identify the badge (when adding a badge you'll use this index)
+    condition: BadgesCondition.Public, // Badge condition, only Public is available for now
+    startTime: 0, // Optional start time, UNIX timestamp
+    endTime: 0, // Optional end time, UNIX timestamp
+  },
+});
+
+
+Give/assign a badge to a user profile 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+import { BadgesCondition } from '@honeycomb-protocol/edge-client';
+
+const { createClaimBadgeCriteriaTransaction: {
+  blockhash,
+  lastValidBlockHeight,
+  transaction,
+} } =
+  await client.createClaimBadgeCriteriaTransaction({
+    args: {
+      profileAddress: profileAddress, // User profile public key, this profile will be assigned the badge
+      projectAddress: projectAddress, // Project public key
+      proof: BadgesCondition.Public, // Proof of the badge, only Public is available for now
+      payer: userPublicKey.toString(), // Transaction payer public key
+      criteriaIndex: 0, // Badge index as an integer, used to identify the badge (the badge that matches this index will be added to the profile)
+    },
+  });
+
+
+Edit this page
+
+
+Users and Profiles
+Difference between users and profiles in Honeycomb Protocol
+In the Honeycomb Protocol, users and profiles are distinct:
+
+User: A person with a universal account, allowing access to any Honeycomb app. Users can link their Steam, Twitter, Discord, and Civic IDs for enhanced functionality. Honeycomb Protocol supports Civic Passes for KYC/AML compliance and identity/uniqueness verification.
+
+Profile: Profiles in Honeycomb Protocol allow users to separate their data according to different projects or applications, for example: social media and gaming. Each project the user engages with creates a specialized profile to store custom data, achievements, and XP for that project. Profiles are stored in a merkle tree for efficient storage and retrieval. We've used Solana's generalized compression to maximize cost savings while still enabling efficient data retrieval.
+
+In summary, the same user can have different profiles for different apps within the Honeycomb Protocol. For example, a user might have one profile dedicated to a social media app, tracking posts, comments, and connections, while another profile is used for a game project to record scores, achievements, and in-game purchases.
+
+Why use Honeycomb Profiles?
+There are several reasons why developers prefer using Honeycomb Profiles:
+
+Cost savings: We've designed Honeycomb Profiles to be so cost effective that even millions of profiles can be stored for a fraction of the cost of traditional PDA accounts and even databases.
+Scalability: Scalability is a big concern for developers. When integrated with Honeycomb, your project can scale to millions (or even tens of millions) of users; we'll do the heavy lifting while you concentrate on building your app.
+Easy retrieval: Despite the low cost, fetching your project's profiles is as simple as making one API call.
+Custom data: Our profiles support custom data storage. You can store any data you want, like NFTs owned, user preferences, or any other data that's relevant to your project.
+KYC/AML support: We've partnered with Civic make it easy for developers to verify their users' identities and even perform uniqueness checks.
+Easy organization of data: Our profiles allow each User to have multiple “domains” where they can store relevant information to the respective app/game such as stats, games played, and scores.
+Decentralization and interoperability: Honeycomb Profiles are decentralized and interoperable, meaning that they can be used across multiple projects and apps within the Honeycomb ecosystem.
+Users
+Before you can create a profile for your project, you need to create a user. Let's cover how you can create a user.
+
+Creating a user 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createNewUserTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createNewUserTransaction({
+    wallet: userPublicKey.toString(), // User's wallet public key
+    info: {
+        name: "Test User",
+        pfp: "https://lh3.googleusercontent.com/-Jsm7S8BHy4nOzrw2f5AryUgp9Fym2buUOkkxgNplGCddTkiKBXPLRytTMXBXwGcHuRr06EvJStmkHj-9JeTfmHsnT0prHg5Mhg",
+        bio: "This is a test user",
+    },
+    payer: adminPublicKey.toString(), // Optional, the transaction payer's public key
+});
+
+
+Create user and profile 
+You can create a user and a profile in a single transaction. However, please do keep in mind that profiles are stored in a merkle tree, so if your project doesn't have a profiles tree, this operation won't work as intended. Please create a profiles tree before using this operation.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const { 
+  createNewUserWithProfileTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createNewUserWithProfileTransaction({
+    project: projectAddress.toString(),
+    wallet: userPublicKey.toString(),
+    payer: adminPublicKey.toString(), 
+    profileIdentity: "main",
+    userInfo: {
+        name: "Honeycomb Developer",
+        bio: "This user is created for testing purposes",
+        pfp: "https://lh3.googleusercontent.com/-Jsm7S8BHy4nOzrw2f5AryUgp9Fym2buUOkkxgNplGCddTkiKBXPLRytTMXBXwGcHuRr06EvJStmkHj-9JeTfmHsnT0prHg5Mhg",
+    },
+});
+
+
+Update user 
+The update user operation allows you to not only update a user's previously provided information, but also to get their Civic Pass information.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const { createUpdateUserTransaction: txResponse } =
+  await client.createUpdateUserTransaction(
+    {
+      payer: userPublicKey.toString(), // The public key of the user who is updating their information
+      populateCivic: true, // Optional, set to true if you want to populate the Civic Pass information
+      wallets: { // Optional, add or remove wallets from the user's Honeycomb Protocol account  
+        add: [newPublicKey], // Optional, add any wallets to the user's Honeycomb Protocol account
+        remove: [oldPublicKey] // Optional, remove any wallets from the user's Honeycomb Protocol account
+      },
+      info: { // Optional, user's information
+        bio: "Updated user bio", // Optional, updated user bio
+        name: "Honeycomb Developer", // Optional, updated name
+        pfp: "https://lh3.googleusercontent.com/-Jsm7S8BHy4nOzrw2f5AryUgp9Fym2buUOkkxgNplGCddTkiKBXPLRytTMXBXwGcHuRr06EvJStmkHj-9JeTfmHsnT0prHg5Mhg", // Optional, updated profile picture
+      }
+    },
+    {
+      fetchOptions: {
+          headers: {
+            authorization: `Bearer ${accessToken}`, // Required, you'll need to authenticate the user with our Edge Client and provide the resulting access token here, otherwise this operation will fail
+          },
+        },
+    }
+  );
+
+
+Please see this page to learn how to get an access token.
+
+In order to access the user's updated data after this operation, you'll have to fetch the user again.
+
+Lastly, please note that if the user hasn't done Civic Pass verification on any of their wallets, the civic array in the fetch user response will be empty.
+
+Find user(s) 
+The find user operation allows you to search for Honeycomb Protocol users by various filters, all of which are optional.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const usersArray = await client.findUsers({ // All filters below are optional
+  wallets: [], // String array of users' wallet addresses
+  addresses: [], // String array of Honeycomb Protocol user account addresses
+  ids: [], // Integer array of Honeycomb Protocol user account IDs
+  includeProof: true, // Optional, set to true if you want to include the proof of the user's account
+}).then(({user}) => user); // This will be an array of users
+
+
+Profiles
+Profiles are specific to each project within the Honeycomb Protocol ecosystem. Let's cover how you can create a profile for your project.
+
+Before you can start creating profiles for your project, you'll need to create a profiles tree. Let's cover that first.
+
+Create a profiles tree 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createCreateProfilesTreeTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createCreateProfilesTreeTransaction({
+  payer: adminPublicKey.toString(),
+  project: projectAddress.toString(),
+  treeConfig: {
+    // Provide either the basic or advanced configuration, we recommend using the basic configuration if you don't know the exact values of maxDepth, maxBufferSize, and canopyDepth (the basic configuration will automatically configure these values for you)
+    basic: { 
+      numAssets: 100000, // The desired number of profiles this tree will be able to store
+    },
+    // Uncomment the following config if you want to configure your own profile tree (also comment out the above config)
+    // advanced: {
+    //   maxDepth: 20,
+    //   maxBufferSize: 64,
+    //   canopyDepth: 14,
+    // }
+  }
+});
+
+
+Creating a profile 
+When creating a profile for an existing user, you'll have to authenticate that user and include an access token in the request. Please see this page to learn how to get an access token.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createNewProfileTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createNewProfileTransaction({
+    project: projectAddress.toString(), // The project's public key
+    payer: userPublicKey.toString(), // The transaction payer's public key, the profile will also be created for this payer
+    identity: "main", // Identity type in string, the value depends on the project's needs
+    info: { // Optional, profile information, all values in the object are optional
+        bio: "My name is John Doe",
+        name: "John Doe",
+        pfp: "link-to-pfp"
+    }
+},
+{
+  fetchOptions: {
+    headers: {
+      authorization: `Bearer ${accessToken}`, // Required, you'll need to authenticate the user with our Edge Client and provide the resulting access token here, otherwise this operation will fail
+    },
+  }
+});
+
+
+Update profile 
+Same as creating a profile, you'll need to authenticate the user and include an access token in the request. Please see this page to learn how to get an access token.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createUpdateProfileTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createUpdateProfileTransaction({
+  payer: userPublicKey.toString(),
+  profile: profileAddress.toString(),
+  info: {
+    bio: "This is profile of user",
+    name: "User",
+    pfp: "link-to-pfp"
+  },
+  customData: {
+    add: { // Here you can add any custom data to a user's profile, the format is given below (please always use key: ["string"])
+      location: ["San Francisco, CA"],
+      website: ["https://johndoe.dev"],
+      github: ["https://github.com/johndoe"],
+      stars: ["55"]
+    },
+    remove: [ // Provide any keys for custom data you want to remove from the profile, the key-value pairs will be removed, the format is given below
+      "collaborations" // This will remove the key "collaborations" from the profile along with the corresponding value
+    ]
+  }
+},
+{
+  fetchOptions: {
+    headers: {
+      authorization: `Bearer ${accessToken}`, // Required, you'll need to authenticate the user with our Edge Client and provide the resulting access token here, otherwise this operation will fail
+    },
+  }
+});
+
+
+After updating the profile, you'll need to fetch the profile again to access the updated data.
+
+Find profile(s) 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const profilesArray = await client.findProfiles({ // All filters below are optional
+  userIds: [], // Integer array of Honeycomb Protocol user account IDs
+  projects: [], // String array of project addresses
+  addresses: [], // String array of Honeycomb Protocol profile account addresses
+  identities: [], // String array of profile identities
+  includeProof: true, // Optional, set to true if you want to include the proof of the profile's account
+}).then(({profile}) => profile); // This will be an array of profiles,
+
+
+Add XP and/or achievements to a profile 
+Developers might want to add XP and/or achievements to a user's profile after they do certain actions in their app/game.
+
+JavaScript
+GraphQL
+Godot
+const { createUpdatePlatformDataTransaction: txResponse } = await client.createUpdatePlatformDataTransaction({
+  profile: profileAddress.toString(), // The profile's public key
+  authority: adminKeypair.publicKey.toString(), // The public key of the project authority
+  platformData: {
+    addXp: 100, // Optional, how much XP to award to the player
+    addAchievements: [1], // Optional, an array containing indexes of the achievements to add
+    custom: { // Optional, add/remove any custom data to the profile
+      add: [
+        ["location", "San Francisco, CA"]
+      ],
+      remove: ["name"],
+    }
+  },
+});
+
+
+Edit this page
+
+
+Characters Overview
+The Honeycomb Protocol Character Manager module provides game developers with an on-chain game asset/character creation and management system. Before we get into the how, let's look at why you'd want to use the Character Manager.
+
+Why use the Character Manager?
+Our Character Manager module can be used in games that need assets with unique attributes/traits; these assets can include, but aren't limited to: characters, cards, companions, and equipment.
+
+Any assets created with the Character Manager are essentially cNFTs. Developers have two options when using Honeycomb Protocol to create characters, let's take a look at those.
+
+1. Wrapping (Bring external NFTs into your game)
+Wrapping will require your users to have an eligible NFT. Eligibility criteria are defined by the developers and can include collection addresses, creator addresses, and merkle trees.
+
+Provided the user has an eligible NFT, wrapping locks the NFT and creates a Honeycomb character. Please keep in mind that this does not change the update authority of the NFT. Unwrapping will remove the character from Honeycomb and unlock the NFT for use again by the player. After unwrapping, the NFT can be exchanged, traded, used for lending, etc.
+
+2. Assembling (Seamless Honeycomb-native character creation)
+Assembling gives developers the flexibility to create characters from scratch or to use NFTs. Developers can define the attributes and traits of the characters and just mint them to users' accounts.
+
+The best part about assembled characters is that they can "evolve" over time. This means that you'll be able to add new traits, change attributes, and even change the appearance of the character. As the gameplay progresses, the character can become more powerful, rare, and unique to the player.
+
+Assembling Characters
+Pre-requisites
+Before following this guide to assemble characters, Please make sure you have followed our getting started guide and set up your development environment.
+
+You will also need to have an existing project on Honeycomb. If you don't have one, please see this guide.
+
+Intro
+Honeycomb has different ways to make characters. We've already covered how to create characters through wrapping. Now, we'll cover how to assemble characters.
+
+The difference between the two is wrapping locks the NFT into a vault and creates a new Honeycomb character, while assembling gives you two other ways to create characters:
+
+Creating a character without an NFT. Using this method, your users will not need to own any NFTs to create characters. Characters created using this method are called native Honeycomb characters.
+Creating a character using an NFT. This method allows you to take the update authority of an NFT and create a new Honeycomb character from it.
+Setting up
+These are the mandatory steps before you can start assembling characters:
+
+1. Create an assembler config 
+In order to assemble a character, you first need to create an assembler config. This config will mainly contain the information about the traits characters can have when they are made using this assembler config.
+
+note
+Defining an order in the assembler config is optional and only needed if you are going to assemble each character with individual, pre-defined attributes. In case you want to provide a whole image for the character, you can simply make the assembler config without defining an order and then provide the image uri when assembling the character.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+await client.createCreateAssemblerConfigTransaction({
+  project: projectAddress.toString(),
+  authority: adminPublicKey.toString(),
+  payer: adminPublicKey.toString(), // Optional payer
+  treeConfig: { // This tree is used to store character traits and their necessary information
+    // Provide either the basic or advanced configuration, we recommend using the basic configuration if you don't know the exact values of maxDepth, maxBufferSize, and canopyDepth (the basic configuration will automatically configure these values for you)
+    basic: {
+      numAssets: 100000, // The desired number of character information this tree will be able to store
+    },
+    // Uncomment the following config if you want to configure your own profile tree (also comment out the above config)
+    // advanced: {
+    //   maxDepth: 20, // Max depth of the tree
+    //   maxBufferSize: 64, // Max buffer size of the tree
+    //   canopyDepth: 14, // Canopy depth of the tree
+    // },
+  },
+  ticker: "unique-string-id", // Provide a unique ticker for the config (the ticker ID only needs to be unique within the project)
+  order: ["Background", "Skin", "Expression", "Clothes", "Armor", "Weapon", "Shield"], // Optional, provide the character traits here; the order matters, in the example order, the background image will be applied and then the skin, expression, clothes, armor, weapon, and shield (if you need your character's expression to appear over the skin, the skin needs to come first in the order)
+});
+
+
+2. Pre-define traits and their URIs (optional) 
+Each of the character traits you've added in the assembler config will need values and corresponding URIs. For example, if you have a trait called "Weapon", you can have values like "Sword", "Axe", "Bow", etc. and their corresponding image URLS.
+
+warning
+Make sure the uri for each trait is a valid image link, otherwise you will get an error when assembling the character using these traits.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+await client.createAddCharacterTraitsTransactions({
+  traits: [ // Example traits given below, the labels have to match what you've declared in the assembler config
+    {
+      label: "Weapon",
+      name: "Bow",
+      uri: "https://example.com/bow.png",
+    },
+    {
+      label: "Weapon",
+      name: "Sword",
+      uri: "https://example.com/sword.png",
+    },
+    {
+      label: "Armor",
+      name: "Helmet",
+      uri: "https://example.com/helmet.png",
+    },
+    {
+      label: "Armor",
+      name: "Chestplate",
+      uri: "https://example.com/chestplate.png",
+    },
+  ],
+  assemblerConfig: assemblerConfigAddress.toString(),
+  authority: adminPublicKey.toString(),
+  payer: adminPublicKey.toString(),
+});
+
+
+3. Create a character model 
+After creating an assembler config, you need to create a character model. It's worth noting that character models for assembled characters are different from wrapped ones.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+import { MintAsKind } from "@honeycomb-protocol/edge-client";
+
+await client.createCreateCharacterModelTransaction({
+  project: projectAddress.toString(),
+  authority: adminPublicKey.toString(),
+  payer: adminPublicKey.toString(), // Optional, use this if you want a different wallet to pay the transaction fee, by default the authority pays for this tx
+  mintAs: { // Optional, you can define the underlying protocol, default is MplCore
+    kind: MintAsKind.MplCore,
+    // Uncomment the following config if you are using MplBubblegum as the underlying protocol in kind
+    // mplBubblegum: {
+    //   maxDepth: 3,
+    //   maxBufferSize: 8,
+    // }
+  },
+  config: {
+    kind: "Assembled",
+    assemblerConfigInput: {
+      assemblerConfig: assemblerConfigAddress.toString(),
+      collectionName: "Assembled NFT Collection",
+      name: "Assembled Character NFT 0",
+      symbol: "ACNFT",
+      description: "Creating this NFT with assembler",
+      sellerFeeBasisPoints: 0,
+      creators: [
+        {
+          address: adminPublicKey.toString(),
+          share: 100,
+        },
+      ],
+    },
+  },
+  attributes: [ // Optional attributes
+    ["Weapon", "Bow"],
+    ["Armor", "Helmet"],
+  ],
+  cooldown: { // Optional, add a cool down period (in seconds) before the characters can be unwrapped
+    ejection: 1, // Ejection/unwrap cool down (in seconds)
+  }
+});
+
+
+4. Create a characters tree 
+After creating a character model, you need to create a character tree. This tree is used to store characters and their necessary information, like who owns the character and if a character is on a mission.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+await client.createCreateCharactersTreeTransaction({
+  authority: adminPublicKey.toString(),
+  project: projectAddress.toString(),
+  characterModel: characterModelAddress.toString(),
+  payer: adminPublicKey.toString(), // Optional, only use if you want to pay from a different wallet
+  treeConfig: { // Tree configuration, this affects how many characters this tree can store
+    basic: {
+      numAssets: 100000,
+    },
+    // Uncomment the following config if you want to configure your own profile tree (also comment out the above config)
+    // advanced: {
+    //   maxDepth: 3,
+    //   maxBufferSize: 8,
+    //   canopyDepth: 3,
+    // },
+  },
+});
+
+
+To calculate the canopy depth, buffer size, and depth, use compressed.app. If you have any confusions about these values, please reach out to us on Discord or email.
+
+Making a character
+Make sure you follow all the previous steps before proceeding as they are required. Afterwards, you have two options to make a character:
+
+Without an NFT (Honeycomb native character)
+Using an NFT
+Without an NFT (Honeycomb native character) 
+You have two ways to assemble a character, one with attributes pre-defined (in the assembler config) and the other with simply a uri to the whole character image.
+
+With predefined traits
+If you defined a traits order in the assembler config and added traits during the earlier setup, you can assemble a character by providing an array of string tuple attributes that the character should have, like so:
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+await client.createAssembleCharacterTransaction({
+  project: projectAddress.toString(), // Project public key as a string
+  assemblerConfig: assemblerConfigAddress.toString(), // Assembler config address as a string
+  characterModel: characterModelAddress.toString(), // Character model public key as a string
+  wallet: userPublicKey.toString(), // User wallet public key as a string, this user will receive the character
+  attributes: [ // Define the character's attributes here in string tuple format
+    ["Weapon", "Bow"],
+    ["Armor", "Helmet"],
+  ],
+});
+
+
+Using an image uri of the character (without traits)
+In case you omitted the traits order and chose to declare traits when assembling, you can simply provide the uri of the character's image as shown:
+
+warning
+Make sure the uri for the character is a valid image link, otherwise you will get an error.
+
+JavaScript
+GraphQL
+await client.createAssembleCharacterTransaction({
+  project: projectAddress.toString(), // Project public key as a string
+  assemblerConfig: assemblerConfigAddress.toString(), // Assembler config address as a string
+  characterModel: characterModelAddress.toString(), // Character model public key as a string
+  wallet: userPublicKey.toString(), // User wallet public key as a string, this user will receive the character
+  uri: "https://arweave.net/123.png" // Uri of the image representing your character
+});
+
+
+Using an NFT
+The second method of creating a character using the assembler is by using an NFT. This method allows you to take the update authority of an NFT and create a new Honeycomb character from it.
+
+You'll still need to follow steps 1 through 4 above. Aferwards, it's a two-step process:
+
+Populate character
+Wrap the character
+1. Populate character 
+Populating an assembleable character will create a new character in an ejected state. This means that the character will be created, but it will not be usable (yet).
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+await client.createPopulateCharacterTransaction({
+  project: projectAddress.toString(),
+  characterModel: characterModelAddress.toString(),
+  mint: mintAddress.toString(),
+  owner: userPublicKey.toString(),
+  updateAuthority: adminPublicKey.toString(),
+  payer: adminPublicKey.toString(), // Optional, use this if you want to pay from a different wallet
+  attributes: [ // Optional attributes, provide the NFT's attributes here in string tuple format
+    ["Weapon", "Bow"],
+    ["Armor", "Helmet"],
+  ],
+});
+
+
+This step will create a Honeycomb Protocol character in an ejected state. Ejected characters are not immediately usable as the associated NFT is not frozen yet. Please follow the next step to wrap the character and make it usable within Honeycomb Protocol.
+
+2. Wrap characters 
+In order to use the ejected characters in Honeycomb, you need to wrap them first. You can do so by sending a query like this:
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+await client.createWrapAssetsToCharacterTransactions({
+  project: projectAddress.toString(),
+  characterModel: characterModelAddress.toString(),
+  wallet: userPublicKey.toString(),
+  mintList: [ // Mint public keys as a string
+    mintAddress.toString(),
+  ]
+});
+
+Other operations
+Here are some other operations you can perform with the assembler.
+
+Find characters 
+All of the variables in the find characters function are optional. You can use any combination of them as needed.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+await client.findCharacters({
+  addresses: [], // String array of character addresses
+  includeProof: true,
+  filters: {}, // Available filters are usedBy, owner, and source
+  mints: [], // Array of NFT mint public keys as a string
+  trees: [], // Array of character model merkle tree public keys as a string
+  wallets: [], // Array of wallet public keys as a string (wallets that own the characters)
+  attributeHashes: [] // Array of attribute hashes as a string
+});
+
+
+Update a character's traits 
+If you want to update a particular character's traits, you can do so by sending a query like this:
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+await client.createUpdateCharacterTraitsTransaction({
+  project: projectAddress.toString(), // Project public key as a string
+  wallet: userPublicKey.toString(), // The wallet that holds the character
+  assemblerConfig: assemblerConfigAddress.toString(), // Assembler config address as a string
+  characterAddress: characterAddress.toString(), // Character address as a string, this character's traits will get updated
+  characterModel: characterModelAddress.toString(), // Character model public key as a string
+  attributes: [ // Send the updated attributes here in string tuple format
+    ["Weapon", "Sword"],
+    ["Armor", "Chestplate"],
+  ],
+});
+
+
+Unwrap a character 
+info
+When a character made using the assembler is unwrapped, the NFT is sent to the user but the character is not deleted. The character will still exist on Honeycomb, albeit in an ejected state.
+
+Unwrapping an asset means that the assets (NFTs/cNFTs) will be returned to the user's wallet. If it was a native Honeycomb assembled character (created without an NFT), a new NFT will be created and sent to the user's wallet.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+await client.createUnwrapAssetsFromCharacterTransactions({
+  characterAddresses: [characterAddress.toString()], // String array of character addresses
+  project: projectAddress.toString(),
+  characterModel: characterModelAddress.toString(),
+  wallet: userPublicKey.toString() // User wallet public key as a string, this user must own the characters and has to sign the tx
+});
+
+
+Rewrap an ejected character 
+info
+When a character is rewrapped, the character's usedBy status on Honeycomb goes from "Ejected" to "None". The character will be usable again in Honeycomb.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+await client.createWrapAssetsToCharacterTransactions({
+  project: projectAddress.toString(),
+  characterModel: characterModelAddress.toString(),
+  wallet: userPublicKey.toString(), // The user must own all of the NFTs given in the mintList below
+  mintList: [ // NFT mint keys array as a string
+    mintAddress.toString(),
+  ],
+});
+
+
+Edit this page
+
+
+Wrapping Characters
+Pre-requisites
+Before following this guide to wrap characters, please make sure that you've followed our getting started guide and set up your development environment. If you need any help at any point.
+
+You will also need to have an existing project on Honeycomb. If you don't have one, you can create a project by following the steps here.
+
+Intro
+Wrapping characters is a process that basically locks an NFT into a vault and creates a Honeycomb character. This process is useful for creating characters from NFTs that are not part of the Honeycomb Protocol.
+
+Follow these steps to create a character using wrapping.
+
+1. Create a character model 
+In order to wrap a character, you first need to create a character model. This model will contain the information about the character's traits.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+await client.createCreateCharacterModelTransaction({
+  authority: adminPublicKey.toString(), // Project authority public key as a string
+  project: projectAddress.toString(),
+  payer: adminPublicKey.toString(), // Optional, if you want to pay from a different wallet
+  config: {
+    kind: "Wrapped",
+    criterias: [
+      {
+        kind: "MerkleTree", // Can be Collection, Creator, or MerkleTree
+        params: merkleTreeAddress.toString(), // Provide the relevant address here
+      }
+    ]
+  },
+  cooldown: { // Optional, add a cool down period (in seconds) before the characters can be unwrapped
+    ejection: 1, // Ejection/unwrap cool down (in seconds)
+  }
+});
+
+
+2. Creating a character tree 
+After creating a character model, you need to create a character tree. This tree is used to store characters and their necessary information, like who owns the character and if a character is on a mission.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+await client.createCreateCharactersTreeTransaction({
+  authority: adminPublicKey.toString(),
+  project: projectAddress.toString(),
+  characterModel: characterModelAddress.toString(),
+  payer: adminPublicKey.toString(), // Optional, only use if you want to pay from a different wallet
+  treeConfig: { 
+    // Provide either the basic or advanced configuration, we recommend using the basic configuration if you don't know the exact values of maxDepth, maxBufferSize, and canopyDepth (the basic configuration will automatically configure these values for you)
+    basic: {
+      numAssets: 100000, // The desired number of characters this tree will be able to store
+    },
+    // Uncomment the following config if you want to configure your own profile tree (also comment out the above config)
+    // advanced: {
+    //   canopyDepth: 20,
+    //   maxBufferSize: 64, 
+    //   maxDepth: 14, 
+    // }
+  },
+});
+
+
+To calculate the canopy depth, buffer size, and depth, use compressed.app. If you have any confusions about these values, please reach out to us on Discord or email.
+
+3. Wrap assets to character 
+After creating a character model and a character tree, you can wrap assets to create a new character.
+
+This process will lock the NFT(s) and create a Honeycomb character.
+
+To wrap, send a query like this:
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+await client.createWrapAssetsToCharacterTransactions({
+  project: projectAddress.toString(),
+  mintList: [] // Provide NFT addresses here,
+  wallet: userPublicKey.toString(), // User's wallet public key as a string
+  characterModel: characterModelAddress.toString(),
+});
+
+Other operations
+Honeycomb also supports other utility operations, covered below.
+
+Find characters 
+All of the variables in the find characters function are optional. You can use any combination of them as needed.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+await client.findCharacters({
+  addresses: [], // String array of character addresses
+  includeProof: true, // Boolean to include proof or not
+  filters: {}, // Available filters are usedBy, owner, and source
+  mints: [], // Array of NFT mint public keys as a string
+  trees: [], // Array of character model merkle tree public keys as a string
+  wallets: [], // Array of wallet public keys as a string (wallets that own the characters)
+  attributeHashes: [] // Array of attribute hashes as a string
+});
+
+
+Unwrapping characters (optional) 
+Unwrapping an asset means that the character will be removed from your project and the assets (NFTs/cNFTs) will be returned to the user's wallet.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+await client.createUnwrapAssetsFromCharacterTransactions({
+  characterAddresses: [], // Array of character addresses as a string
+  characterModel: characterModelAddress.toString(),
+  project: projectAddress.toString(),
+  wallet: userPublicKey.toString(),
+});
+
+Edit this page
+
+
+
+Equipping Resources on Characters
+Pre-requisites
+Before you can fetch history for a character, you'll need the following:
+
+A project
+At least one created/imported Honeycomb Resource
+At least one character
+Intro
+Honeycomb Protocol has a rich inventory and resource system that allows your players to equip resources on characters to boost a character's stats or abilities. This guide will show you how to incorporate these elements in your game.
+
+Equipping Resources 
+Before equipping the resources, please make sure that your players have both the character and the resource that's being equipped in their inventory. Otherwise, this transaction will fail.
+
+Once you make perform the pre-requisite checks, here's how you can equip the resource:
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const { 
+    createEquipResourceOnCharacterTransaction: txResponse // The transaction response that you have to get signed and send the transaction
+} =
+await client.createEquipResourceOnCharacterTransaction({
+    characterModel: characterModelAddress.toString(), // The address of the character model
+    characterAddress: characterAddress.toString(), // The character the resource is being equipped to
+    resource: resourceAddress.toString(), // The address of the resource being equipped
+    owner: userPublicKey.toString(), // The public key of the owner
+    amount: "1000", // The amount of the resource being equipped
+});
+
+
+Unequipping/Dismounting Resources 
+To unequip or dismount a resource from a character, you can use the following query:
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const { 
+    createDismountResourceOnCharacterTransaction: txResponse // The transaction response that you have to get signed and send the transaction
+} =
+await client.createDismountResourceOnCharacterTransaction({
+    characterModel: characterModelAddress.toString(), // The address of the character model
+    characterAddress: characterAddress.toString(), // The character the resource is being unequipped from
+    resource: resourceAddress.toString(), // The address of the resource being unequipped
+    owner: userPublicKey.toString(), // The public key of the owner
+    amount: "1000", // The amount of the resource being unequipped
+});
+
+
+Edit this page
+
+
+
+Character History
+Pre-requisites
+Before you can fetch history for a character, you'll need to make sure that you have a project and character created. Refer to the creating a project and characters overview guides to learn how to do so.
+
+Intro
+The Edge Client's has a feature that allows you to fetch the history of a character. This feature is useful for tracking the character's progress and activities over time.
+
+Query 
+To fetch the history of a character, you'll need to make the following query to the Edge Client:
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+await client.fetchCharacterHistory({
+  addresses: [ // Array of character addresses (Required)
+    characterAddress.toString()
+  ],
+  event: [ // Array of event types (Optional)
+    "Staking",
+    "Mission"
+  ],
+});
+
+Edit this page
+Last updated on Jun 25, 2025
+Previous
+
+
+
+Resources
+Pre-requisites
+Please make sure that you've followed our getting started guide and set up your development environment.
+
+You'll also need to have a project set up in Honeycomb Protocol. If you haven't done that yet, you can create one using instructions here.
+
+Why use resources?
+There are many reasons why you might want to use resources in your app or game. Here are a few:
+
+In-game currency (or currencies): Resources can be used as in-game currency, allowing users to buy, sell, and trade items. For example: you might create a resource named "Gold", which your players can then use to buy items in your game and even trade between themselves.
+Crafting materials: We've enabled resources to be used as crafting materials to create new items. Kind of like Minecraft, where players can combine different resources to craft something.
+Consumable/equippable items: Resources can be used as equippable items that can be used to enhance a character's abilities. This can apply to both consumables (like potions) and non-consumables (like armor).
+Progression gates: Use certain resources as “keys” to unlock content, such as levels, dungeons, or story chapters. Players need to collect, purchase, or burn specific resources to gain access.
+Reputation system: Not all resources need to be tangible. Resources can be used in-game to track player reputation, achievements, or other intangible metrics.
+Time-based or seasonal resources: Create resources that are only available for a limited time or during specific seasons. For example: you can have a Christmas resource named "Ice Crystals" that can only be collected during the holiday season.
+Quest rewards: Use resources as quest rewards that players can earn by completing in-game tasks. For example: players can earn "Dragon Scales" by defeating a dragon in your game; or they can collect "Mushrooms" by just foraging around.
+Types of resources in Honeycomb Protocol
+There are two types of resources you can create in Honeycomb Protocol:
+
+Ledger State Resources: These are resources that are compressed and stored in a vault account. They require having an associated resource merkle tree to store ownership details. Here are some reasons why you'd prefer using ledger/compressed state resources:
+In some cases, your resources might not need to be traded on marketplaces, keeping such resources in ledger state will keep them usable in-game while saving on costs.
+If needed, you can provide your players with the functionality to convert these resources to Account State Resources (which will convert them to usable fungible tokens).
+Let's consider this scenario: you mint a compressed resource to a player ten times, each mint will just update their compressed account balance, saving on minting costs. When the player converts it, you'll only need to pay the minting cost once.
+Account State Resources: These are resources that are uncompressed and stored in a user's account. Essentially these are fungible tokens that can be used for transfers, trades, etc. Account state resources will already be familiar to users who have interacted with fungible tokens, and they can easily be traded on marketplaces. Here are some reasons why you'd prefer using account/uncompressed state resources:
+Account state resources are easily tradable on marketplaces without the need for additional conversion/minting steps. If you anticipate that your players will need to move these resources in and out of your game frequently, account state resources are the way to go.
+These resources can be used anywhere as fungible tokens, even outside Honeycomb Protocol or other Honeycomb games.
+Fungible tokens are more familiar to users who have interacted with cryptocurrencies or blockchain games before. They add a layer of transparency and trust to your game, as well an element of earn-to-play.
+Resource instructions
+Creating a resource 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+    createCreateNewResourceTransaction: {
+        resource: resourceAddress, // This is the resource address once it'll be created
+        tx: txResponse, // This is the transaction response, you'll need to sign and send this transaction
+    },
+} = await client.createCreateNewResourceTransaction({
+    project: projectAddress,
+    authority: adminPublicKey.toString(),
+    payer: adminPublicKey.toString(), // Optional, specify when you want a different wallet to pay for the tx
+    params: {
+            name: "Gold", // Name of the resource
+            decimals: 6, // Number of decimal places the resource can be divided into
+            symbol: "GOLD", // Symbol of the resource
+            uri: "https://example.com", // URI of the resource
+            storage: ResourceStorageEnum.LedgerState, // Type of the resource, can be either AccountState (uncompressed/unwrapped) or LedgerState (compressed/wrapped)
+            tags: ["Sword"], // Optional, tags for the resource; tags act as metadata to help you keep track of game stats
+    }
+});
+
+
+Creating a resource tree 
+If the resource you created is compressed or you want your players to be able to convert it to a compressed state, you'll need to create a resource tree. This merkle tree stores and verifies the ownership of resources. Each leaf is a compressed record of the resource's ownership.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createCreateNewResourceTreeTransaction: {
+    treeAddress: merkleTreeAddress, // This is the merkle tree address once it'll be created
+    tx: txResponse, // This is the transaction response, you'll need to sign and send this transaction
+  },
+} = await client.createCreateNewResourceTreeTransaction({
+    project: projectAddress.toString(),
+    authority: adminPublicKey.toString(),
+    payer: adminPublicKey.toString(), // Optional, specify when you want a different wallet to pay for the tx
+    resource: resourceAddress.toString(),
+    treeConfig: {
+      // Provide either the basic or advanced configuration, we recommend using the basic configuration if you don't know the exact values of maxDepth, maxBufferSize, and canopyDepth (the basic configuration will automatically configure these values for you)
+      basic: { 
+        numAssets: 100000, // The desired number of resources this tree will be able to store
+      },
+      // Uncomment the following config if you want to configure your own profile tree (also comment out the above config)
+      // advanced: {
+      //   maxDepth: 20,
+      //   maxBufferSize: 64,
+      //   canopyDepth: 14,
+      // }
+    }
+});
+
+
+Mint a resource 
+Once you have a resource, you can mint its tokens for your players in response to in-game actions. Here's how to do it:
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const { 
+  createMintResourceTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createMintResourceTransaction({
+    resource: resourceAddress.toString(), // Resource public key as a string
+    amount: "50000", // Amount of the resource to mint
+    authority: adminPublicKey.toString(), // Project authority's public key
+    owner: userPublicKey.toString(), // The owner's public key, this wallet will receive the resource
+    payer: adminPublicKey.toString(), // Optional, specify when you want a different wallet to pay for the tx
+});
+
+
+Create a resource faucet 
+JavaScript
+GraphQL
+const { 
+  createInitializeFaucetTransaction: { 
+      faucet: faucetAddress, // This is the faucet address once it'll be created
+      tx: txResponse  // This is the transaction response, you'll need to sign and send this transaction
+  },
+} = await client.createInitializeFaucetTransaction({
+    resource: resourceAddress.toString(), // Resource public key as a string
+    amount: 50000, // Amount of the resource to make available in the faucet
+    authority: adminPublicKey.toString(), // Project authority's public key
+    repeatInterval: 20, // The interval in seconds between faucet requests
+    payer: adminPublicKey.toString(), // Optional, specify when you want a different wallet to pay for the tx
+});
+
+
+Burn a resource 
+Burning a resource is useful for a variety of reasons. You might want your players to be able to destroy items they no longer need, or pay a price for entering a dungeon, etc. Whatever the case is, here's how you can burn a resource:
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createBurnResourceTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createBurnResourceTransaction({
+    authority: userPublicKey.toString(), // The resource owner's public key
+    resource: resourceAddress.toString(),
+    amount: "50000", // Amount of the resource to burn
+    payer: adminPublicKey.toString(), // Optional, specify when you want a different wallet to pay for the tx
+});
+
+
+Transfer a resource 
+If your players have a certain resource in their inventory, you can enable them to transfer it to other players like this:
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createTransferResourceTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createTransferResourceTransaction({
+    resource: resourceAddress.toString(),
+    owner: userPublicKey.toString(), // Sender's public key as a string
+    recipient: recipientPublicKey.toString(), // Recipient's public key as a string
+    amount: "50000", // Amount of the resource to transfer
+    payer: adminPublicKey.toString(), // Optional, specify when you want a different wallet to pay for the tx
+});
+
+
+Importing and exporting resources
+With the addition of Token 2022 into our resource program, you can now import Solana tokens into your project as fungible resources. They can then be minted, burned, and transferred like any other fungible resource on Honeycomb Protocol.
+
+Import a resource 
+You have to be the owner/authority of the token you're importing. Once you've imported the resource, you can mint, burn, and transfer it like any other fungible resource.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createImportFungibleResourceTransaction: {
+    resource: resourceAddress, // This is the resource address once it's imported
+    tx: txResponse // This is the transaction response, you'll need to sign and send this transaction
+  },
+} = await client.createImportFungibleResourceTransaction({
+    params: {
+      decimals: 0, // Number of decimal places the resource can be divided into
+      tags: ["Sword"], // Optional, tags for the resource; tags act as metadata to help you keep track of game stats
+      project: projectAddress, // Project public key as a string
+      mint: "mint", // Mint address of the resource
+      authority: adminPublicKey.toString(),
+      storage: ResourceStorageEnum.LedgerState, // Type of the resource, can be either AccountState (uncompressed/unwrapped) or LedgerState (compressed/wrapped)
+      custody: { // Optional, define a supply amount and optional burner destination
+        supply: "50000", // Amount of the resource to import
+        burnerDestination: burnerDestinationPublickey.toString(), // Optional, burner destination public key as a string (if provided, any tokens, when burnt, will be sent to this address)
+      }
+    }
+});
+
+
+Export a resource 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createExportFungibleResourceTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createExportFungibleResourceTransaction({
+    resource: resourceAddress.toString(),
+    authority: adminPublicKey.toString(),
+});
+
+
+Wrapping and unwrapping resources
+Wrapping and unwrapping are two important functions in Honeycomb Protocol. Wrapping a resource compresses it, while unwrapping a resource uncompresses it. These two methods let you convert a resource state (i.e., from AccountState to LedgerState or vice versa).
+
+Wrap a resource 
+Wrapping a resource compresses it and stores it in a holding account. This holding account is managed by the project authority.
+
+note
+In case you're wrapping an AccountState resource, make sure you have an existing resource tree, otherwise the wrap operation will fail.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const { 
+  createCreateWrapHoldingTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createCreateWrapHoldingTransaction({
+    authority: userPublicKey.toString(),
+    resource: resourceAddress.toString(),
+    amount: "50000", // Amount of the resource to wrap
+    payer: adminPublicKey.toString(), // Optional, specify when you want a different wallet to pay for the tx
+});
+
+
+Unwrap a resource 
+When you unwrap a resource, it's transferred from the holding account to the user's account, where it can be used for transfering, trading, burning etc.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createCreateUnwrapHoldingTransaction: { 
+    tx: txResponse, // This is the transaction response, you'll need to sign and send this transaction
+  },
+} = await client.createCreateUnwrapHoldingTransaction({
+    authority: userPublicKey.toString(),
+    resource: resourceAddress.toString(),
+    amount: "50000", // Amount of the resource to unwrap
+    payer: adminPublicKey.toString(), // Optional, specify when you want a different 
+});
+
+
+Recipes
+Recipes are a way to define how resources can be combined to create new items.
+
+In Honeycomb Protocol, developers can define recipes that let their users craft new items. Let's take a look at how you can bake this functionality into your app or game.
+
+Create a recipe 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createCreateRecipeTransaction: {
+    recipe: recipeAddress, // This is the recipe address once it'll be created
+    tx: txResponse, // This is the transaction response, you'll need to sign and send this transaction
+  },
+} = await client.createInitializeRecipeTransaction({
+  project: projectAddress.toString(),
+  xp: "50000",
+  authority: adminPublicKey.toString(),
+  payer: adminPublicKey.toString(), // Optional, specify when you want a different wallet to pay for the tx
+  ingredients: [
+    // Send an array of ingredients here, these resources must already be created in your project and should be of the same type
+    {
+        resourceAddress: resourceAddress.toString(),
+        amount: "100", // Amount of the resource
+    },
+  ],
+  meal: {
+      resourceAddress: resultingResourceAddress.toString(),
+      amount: "5",
+  },
+});
+
+
+Craft/cook an item using a recipe 
+We've simplified crafting/cooking so you only need to make one API call to our Edge Client. However, you'll receive an array of transactions in response. These transactions all need to be signed and sent back to the Edge Client using the sendClientTransactions function.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createInitCookingProcessTransactions: {
+    transactions, // This is an array of transactions, you'll need to get these transactions signed by the user before sending them
+    blockhash,
+    lastValidBlockHeight,
+  },
+} = await client.createInitCookingProcessTransactions({
+  recipe: recipeAddress.toString(), // Recipe PDA public key as a string
+  authority: userPublicKey.toString(), // User's public key as a string
+});
+
+
+Add an ingredient to a recipe 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createAddIngredientsTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createAddIngredientsTransaction({
+  recipe: recipeAddress.toString(),
+  authority: adminPublicKey.toString(),
+  payer: adminPublicKey.toString(), // Optional, specify when you want a different wallet to pay for the tx
+  ingredients: [
+    // Send an array of ingredients here, these resources must already be created in your project, also make sure they're of the same type as the ones already present in your recipe
+    {
+        resourceAddress: ingredientAddress.toString(), // Resource public key as a string
+        amount: "100", // Amount of the resource needed
+    },
+  ],
+});
+
+
+Remove an ingredient from a recipe 
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createRemoveIngredientsTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createRemoveIngredientsTransaction({
+  recipe: recipeAddress.toString(),
+  authority: adminPublicKey.toString(),
+  payer: adminPublicKey.toString(), // Optional, specify when you want a different wallet to pay for the tx
+  ingredients: [ // Send an array of ingredient public keys as a string here, these resources must already be present in your project and this recipe
+    ingredientAddress.toString(),
+  ],
+});
+
+
+Edit this page
+
+
+Missions
+Pre-requisites
+Please make sure that you've followed our getting started guide and set up your development environment.
+
+You'll also need the following:
+
+A project
+At least one resource
+Characters
+In order to participate in missions, your users will need to have created a profile for your project. They'll also need eligible characters that can go on the missions you create (more on this below).
+
+Why use missions?
+Missions can be used in a variety of ways, including:
+
+Idle rewards: Your players earn idle rewards while they're not actively playing, or interacting with, your game.
+Give players a reason to come back: Missions can be used to encourage your users to come back to your game. As a developer, you can create a mission that can be completed once a day, for example.
+Encourage players to explore: Developers can also create missions that require players to have certain characters. It's up to you to decide how players can get these characters. For example, you could create a mission that requires a character that can only be obtained by completing a certain quest in your game.
+Guild/clan missions (coming soon): Honeycomb Protocol will soon be implementing guilds. That way, a whole guild will be able to participate in missions and earn rewards together. The reward distribution mechanism will be decided by the guild leader.
+Missions instructions
+Create a mission pool 
+You'll begin by creating a mission pool. The purpose of a mission pool is to group missions together based on the criteria you define. For example, you could create a mission pool for all missions that require a certain character model. Users who don't have a character based on that model won't be able to participate in the missions in that pool.
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createCreateMissionPoolTransaction: {
+      missionPoolAddress, // The address of the mission pool
+      tx, // The transaction response, you'll need to sign and send this transaction
+  },
+} = await client.createCreateMissionPoolTransaction({
+    data: {
+        name: "Test Mission Pool",
+        project: projectAddress.toString(),
+        payer: adminPublicKey.toString(),
+        authority: adminPublicKey.toString(),
+        characterModel: characterModelAddress.toString(),
+    },
+});
+
+
+Create a mission 
+In order to create a mission, you should already have a mission pool. Afterwards, here's how you can create a mission:
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+import { RewardKind } from "@honeycomb-protocol/edge-client";
+
+const {
+  createCreateMissionTransaction: {
+      missionAddress, // The address of the mission
+      tx, // The transaction response, you'll need to sign and send this transaction
+  },
+} = await client.createCreateMissionTransaction({
+    data: {
+        name: "Test mission",
+        project: projectAddress.toString(),
+        cost: {
+            address: resourceAddress.toString(),
+            amount: "100000",
+        },
+        duration: "86400", // 1 day
+        minXp: "50000", // Minimum XP required to participate in the mission
+        rewards: [
+            {
+                kind: RewardKind.Xp,
+                max: "100",
+                min: "100",
+            },
+            {
+                kind: RewardKind.Resource,
+                max: "50000000", 
+                min: "25000000", 
+                resource: resourceAddress.toString(),
+            },
+        ],
+        missionPool: missionPoolAddress.toString(),
+        authority: adminPublicKey.toString(),
+        payer: adminPublicKey.toString(),
+    },
+});
+
+
+Send characters on mission 
+This transaction will send a player's character(s) on an eligible mission:
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createSendCharactersOnMissionTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction 
+} = await client.createSendCharactersOnMissionTransaction({
+    data: {
+        mission: missionAddress.toString(),
+        characterAddresses: [
+            characterAddress.toString(),
+        ],
+        authority: userPublicKey.toString(),
+        payer: payerPublicKey.toString(), // Optional
+    },
+});
+
+
+Recall characters from a mission 
+Once a mission's duration has ended, you can recall characters from the mission. Recalling will automatically claim any rewards that the characters have earned. If you recall before the mission's duration has ended, the characters will not receive any rewards.
+
+Here's the transaction for recalling characters:
+
+JavaScript
+GraphQL
+Unity/C#
+Godot
+const {
+  createRecallCharactersTransaction: txResponse // This is the transaction response, you'll need to sign and send this transaction
+} = await client.createRecallCharactersTransaction({
+    data: {
+        mission: missionAddress.toString(),
+        characterAddresses: [
+            characterAddress.toString()
+        ],
+        authority: userPublicKey.toString(),
+        payer: payerPublicKey.toString(), // Optional
+    },
+    lutAddresses: [lookupTableAddress],
+});
+
+
+Fetching a character's history 
+Please see the character history guide to learn how to fetch a character's history.
+
+Edit this page
