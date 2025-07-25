@@ -71,16 +71,6 @@ const TaskPage = () => {
       hasAnsweredFirstQToday: hasAnsweredFirstQToday,
     };
 
-    // const { updatedTraits, rewards } = checkMissions(traits, progressStats);
-
-    // const missionXP = rewards.reduce((sum, r) => sum + (r.xp || 0), 0);
-    // const totalXP = correct ? earnedXP + missionXP : 0;
-
-    // if (correct && totalXP > 0) {
-    //   addXP(totalXP);
-    // }
-
-    // setTraits(updatedTraits);
 
     const missionXP = correct
       ? checkMissions(traits, progressStats).rewards.reduce(
