@@ -1,4 +1,4 @@
-// MissionsPage.js
+
 
 import React from "react";
 import { useTrait } from "../context/Traitcontext";
