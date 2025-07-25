@@ -1,51 +1,53 @@
-
 #  HIVESCRIBE
-A single player quizz game on Solana Utilizing the Honeycomb Protocol. Play, Learn, Earn and Evolve
-
+A single-player quiz game built on **Solana** using the **Honeycomb Protocol**.  
+Play, Learn, Earn, and Evolve — one stage at a time.
 
 ![HIVESCRIBE Banner](./HIVESCRIBE.png)
 
-
-**Built for the Superteam Nigeria x Honeycomb Protocol Bounty**
 ---
 
-**HIVESCRIBE** is a replayable progression based single player quizz game where players evolve through the **bee lifecycle**. It leverage the HoneyComb Protocol even though as it is not a full rpg game, to track player traits, reward mission completion, and evolve through on-chain reward mechanics. It combine the concept of wallet identity, mission logic, and on-chain progression into a unified gameplay loop. 
-
-## Game Concept
-
---- Grow from **Larva to Hive** — by answering blockchain themed questions. 
---- Earn **XP** stored on-chain using the **Honeycomb Protocol** for each correct question. And climb up each stages as your XP threshold changes
---- Complete Missions and get th **Nectar**
---- XP can also be converted to Nectar and a stage in the game. 
-
-
-
-###  Stages:
-- **Larva** (0 XP)
-- **Pupa** (8 XP)
-- **Worker Bee** (16 XP)
-- **Hive** (30 XP)
-- **Honey** (Final stage, then you unlock competitive gameplay)
----
-
-##  Core Features (At the time of submission)
-
-✅ **Solana Wallet Connection**  
-✅ **Dashboard Progression System** (with XP/Nectar earned from missions)  
-✅ **On-chain Missions** via Honeycomb Protocol  
-✅ **Trait Display** (XP and mission completion status)  
-✅ **Profile Page** with accurate progression bar  
-✅ **Mission Page** displaying completed missions  
+### **Built And Submitted for the Superteam Nigeria x Honeycomb Protocol Bounty**
 
 ---
 
+## 🎮 Game Concept
 
+**HiveScribe** is a replayable, progression-based single-player quiz game inspired by the **bee lifecycle**.  
+Players grow from **Larva → Hive → Honey**, answering questions, earning XP, and unlocking stages.
+
+It uses the **Honeycomb Protocol** to:
+- Track player **traits** (XP, mission status)
+- Reward **on-chain mission** completions
+- Store identity and progress on Solana
+
+---
+##  Lifecycle Stages
+
+| Stage        | Required XP |
+|--------------|-------------|
+| Larva        | 0 XP        |
+| Pupa         | 8 XP        |
+| Worker Bee   | 16 XP       |
+| Hive         | 30 XP       |
+| Honey      | Final competitive stage (uses Nectar & Honey jars) |
+
+---
+
+##  Core Features (at the time of this MVP Submission)
+
+✅ Solana **Wallet Connection**  
+✅ Functional **Dashboard** with stage unlocks and XP/Nectar display  
+✅ **Mission System** powered by Honeycomb Protocol  
+✅ **Profile Page** with XP progress bar  
+✅ **Mission Page** showing completed missions  
+
+---
 ##  Features Planned but Not Yet Implemented
 
-- XP-to-Nectar and Nectar-to-Honey conversions
-- Competitive "Honey" stage where players battle with their earned Honey jars
-- Full mission reward logic tied to question answering
-- Leaderboards and multiplayer mechanics
+- XP-to-Nectar and Nectar-to-Honey conversion  
+- Competitive “Honey” stage with head-to-head battles that will either cost you your honeyjar or win you one. 
+- Full XP and mission reward logic per question  
+- Leaderboard system and multiplayer logic  
 
 ---
 
@@ -57,50 +59,79 @@ HiveScribe shows how **Honeycomb Protocol** can be used beyond simplifying  back
 - Traits power stage evolution
 - All actions can be linked to player identity on-chain.
 
+---
+##  Tech Stack used
 
+-  React + Vite (Frontend)  
+-  Honeycomb Protocol (Missions, Traits)  
+-  Phantom Wallet Adapter (Solana Devnet)  
+-  LocalStorage caching (Dev mode)
 
 ---
+##  Submission Note
 
-##  Tech Stack so far
-
-- **Solana Wallet Adapter (Phantom)**
-- **Honeycomb Protocol** for missions and traits
-- **React + Vite** for the frontend
-- **LocalStorage** for dev-mode caching
-  integration targets: Verxio, Solana Pay.
+> The bounty page is unclear — it says *"Winners announced July 30"*, but still shows *20+ days left*.  
+To avoid missing the judging deadline, I’m submitting this MVP now so that the **core concept and Honeycomb integration** can be reviewed.
 
 ---
-
-##  Submission Note!
-**Why did i Submit this Now?**
-The submission page states that winners will be announced **July 30**, but also shows a confusing count down timer. Rather than risk missing the judging deadline, I'm submitting this MVP now to ensure this concept of gameplay gets reviewed. 
-
----
-
-##  Getting Started (Dev Mode)
+## 🚀 Getting Started (Dev Mode)
 
 ```bash
 git clone https://github.com/iCode1t/hivescribe.git
-cd BeeRank
+cd hivescribe
 npm install
 npm run dev
 ```
+Make sure to have and  connect a solana wallet(preferably Phantom) on DEVNET
+---
+## 🕹️ How to Play
+
+1. **Connect Wallet** — Login using Phantom Wallet  
+2. **Play Quizzes** — Answer questions to earn XP  
+3. **Complete Missions** — Unlock Nectar and track mission rewards  
+4. **Evolve** — Reach new lifecycle stages as XP increases  
+5. *Coming Soon:*
+   - XP → Nectar → Honey  
+   - Battle with Honey jars in PvP mode  
+   - Mint Honey Scroll NFTs  
+   - Daily Verxio XP streaks  
 
 ---
-## **How to Start Play**
-Make Sure to connect a solana wallet on devnet(Preferrable Phantom)
-1. **Connect Wallet** — Players sign in with Phantom Wallet on Solana Devnet.
-2. **Complete Tasks** — Answer Questions 
-3. **Earn Reward** — Gain XP for each correct answer. And Nectar when you complete a mission.
-4. **Evolve** — Reach new lifecycle stages:
-5. **Daily Streak** — Login daily for +50 XP with Verxio.
-6. **Mint Honey Scroll** — Final NFT minted for 0.01 SOL using Solana Pay.
-7. **Compete** — Check your rank on the Hive Board leaderboard.
-
----
 
 
-📂 Project Structure
----
-Created by icode1t
-Twitter: https://x.com/big_ola_?s=21
+##  Project Structure
+
+
+hivescribe/
+
+├── src/
+
+│ ├── components/
+
+│ ├── context/
+
+│ ├── data/
+
+│ ├── pages/
+
+│ ├── Utils/
+
+│ ├── honeycombStuff/
+
+│ ├── App.jsx
+
+│ ├── main.jsx
+
+│ └── index.css
+
+├── public/
+
+│ └── HIVESCRIBE.png
+
+├── README.md
+
+├── package.json
+
+└── vite.config.js
+
+
