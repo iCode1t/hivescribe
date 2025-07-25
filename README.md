@@ -99,8 +99,10 @@ Make sure to have and  connect a solana wallet(preferably Phantom) on DEVNET
 ---
 ## 🎥 Demo Video
 
-Watch the HiveScribe walkthrough:  
-[▶️ Click to Watch Video](https://github.com/iCode1t/hivescribe/raw/refs/heads/main/HivescribeDEMO.mp4)
+<video width="100%" controls>
+  <source src="https://github.com/iCode1t/hivescribe/raw/main/HivescribeDEMO.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 
 ##  Project Structure
