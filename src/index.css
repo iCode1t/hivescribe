@@ -374,7 +374,7 @@ body {
   height: auto;
   margin-bottom: 1.5rem;
   display: block;
-  filter: drop-shadow(0 0 10px rgba(255, 223, 80, 0.3)); /* optional glow */
+  filter: drop-shadow(0 0 10px rgba(255, 223, 80, 0.3));
 }
 
 .back-button {
