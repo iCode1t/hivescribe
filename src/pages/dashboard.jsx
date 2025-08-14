@@ -6,14 +6,20 @@ import { ensureUserProfile } from "../Utils/ensureUserProfile";
 
 import { useConnection } from "@solana/wallet-adapter-react";
 import StatusCard from "../components/StatusCard";
-import Honey from "../assets/icons/honeyAsScroll.png";
 import Hive from "../assets/icons/hiveAsScroll.png";
 import WorkerBee from "../assets/icons/workerBeeAsScroll.png";
 import Pupa from "../assets/icons/pupaAsScroll.png";
 import larva from "../assets/icons/larvaAsScroll.png";
-import honeyJarIcon from "../assets/icons/nectarAsXpIcon.png";
+import nectarIcon from "../assets/icons/nectarIcon.png";
 
 const Dashboard = () => {
+  const shortenAddress = (address) => {
+    if (!address) return "";
+    const str = address;
+    return `${str.slice(0, 4)}******${str.slice(-6)}`;
+  };
+  const capitalize = (s) => s?.charAt(0).toUpperCase() + s.slice(1);
+  const { publicKey } = useWallet();
   const navigate = useNavigate();
   const { traits } = useTrait();
   const wallet = useWallet();
@@ -33,17 +39,13 @@ const Dashboard = () => {
 
   const stageOrder = ["larva", "pupa", "worker", "hive"];
   const currentStageIndex = stageOrder.indexOf(traits.stage);
-  const xp = traits.nectarXP;
+  const playerXP = traits.playerXP;
 
-  const renderNectarXp = (cardStage) => {
+  const renderPlayerXp = (cardStage) => {
     const cardIndex = stageOrder.indexOf(cardStage);
 
-    if (cardStage === "honey") {
-      return traits.stage === "hive" ? `${traits.honey} Honey` : "Locked";
-    }
-
     if (cardIndex < currentStageIndex) return " Completed";
-    if (cardIndex === currentStageIndex) return `${xp} xp`;
+    if (cardIndex === currentStageIndex) return `⚡: ${playerXP} `;
     return " Locked";
   };
 
@@ -56,61 +58,67 @@ const Dashboard = () => {
 
   return (
     <div className="page-wrapper">
-      <button
-        className="profile-button"
-        onClick={() => navigate("/profilepage")}
-      >
-        My Profile
-      </button>
+      <div className="hud-profile-info">
+        <span className="profile-rank">🪜 {capitalize(traits.stage)}</span>
+        <span className="profile-wallet">
+          🔑{" "}
+          {publicKey ? shortenAddress(publicKey.toBase58()) : "Not Connected"}
+        </span>
+        <span className="profile-xp">⚡XP: {playerXP}</span>
+        <span className="profile-nectar">
+          <p>
+            <img src={nectarIcon} alt="nectat icon" className="nectar-icon" />
+            Nectar: {traits.nectar}
+          </p>
+        </span>
+      </div>
+      <div className="nav-buttons-wrapper">
+        <button className="nav-button" onClick={() => navigate("/playerguide")}>
+          📚 Guides
+        </button>
+        <button className="nav-button" onClick={handleStartTask}>
+          ▶️ Quiz
+        </button>
+        <button className="nav-button" onClick={() => navigate("/pvpduel")}>
+          🆚 Duel
+        </button>
+        <button className="nav-button" onClick={() => navigate("/profilepage")}>
+          👤 Profile
+        </button>
+      </div>
+      <div className="stage-ladder">
+        {/* HIVE */}
+        <StatusCard
+          label="HIVE"
+          icon={Hive}
+          playerXP={renderPlayerXp("hive")}
+          locked={isLocked("hive")}
+        />
 
-      {/* HONEY - Only unlocked at hive level */}
-      <StatusCard
-        label="HONEY"
-        icon={Honey}
-        honeyIcon={honeyJarIcon}
-        NectarXp={renderNectarXp("honey")}
-        locked={isLocked("honey")}
-      />
+        {/* WORKER BEE */}
+        <StatusCard
+          label="WORKER BEE"
+          icon={WorkerBee}
+          playerXP={renderPlayerXp("worker")}
+          locked={isLocked("worker")}
+        />
 
-      {/* HIVE */}
-      <StatusCard
-        label="HIVE"
-        icon={Hive}
-        honeyIcon={honeyJarIcon}
-        NectarXp={renderNectarXp("hive")}
-        locked={isLocked("hive")}
-      />
+        {/* PUPA */}
+        <StatusCard
+          label="PUPA"
+          icon={Pupa}
+          playerXP={renderPlayerXp("pupa")}
+          locked={isLocked("pupa")}
+        />
 
-      {/* WORKER BEE */}
-      <StatusCard
-        label="WORKER BEE"
-        icon={WorkerBee}
-        honeyIcon={honeyJarIcon}
-        NectarXp={renderNectarXp("worker")}
-        locked={isLocked("worker")}
-      />
-
-      {/* PUPA */}
-      <StatusCard
-        label="PUPA"
-        icon={Pupa}
-        honeyIcon={honeyJarIcon}
-        NectarXp={renderNectarXp("pupa")}
-        locked={isLocked("pupa")}
-      />
-
-      {/* LARVA */}
-      <StatusCard
-        label="LARVA"
-        icon={larva}
-        honeyIcon={honeyJarIcon}
-        NectarXp={renderNectarXp("larva")}
-        locked={isLocked("larva")}
-      />
-
-      <button className="to-task-page-button" onClick={handleStartTask}>
-        Start Task
-      </button>
+        {/* LARVA */}
+        <StatusCard
+          label="LARVA"
+          icon={larva}
+          playerXP={renderPlayerXp("larva")}
+          locked={isLocked("larva")}
+        />
+      </div>
     </div>
   );
 };

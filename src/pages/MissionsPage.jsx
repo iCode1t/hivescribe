@@ -1,33 +1,32 @@
-// MissionsPage.js
-
 import React from "react";
 import { useTrait } from "../context/Traitcontext";
 import { useNavigate } from "react-router-dom";
+import nectarIcon from "../assets/icons/nectarIcon.png";
 
 const allMissions = [
   {
     id: "hatched",
     name: "Hatched",
-    description: "Answer your first question correctly.",
-    xp: 4,
+    description: "Answered your first question correctly.",
+    nectar: 1,
   },
   {
     id: "hotStreak",
     name: "Hot Streak",
-    description: "Get 5 correct answers in a row.",
-    xp: 6,
+    description: "Got 5 correct answers in a row.",
+    nectar: 1,
   },
   {
     id: "loyalBee",
     name: "Loyal Bee",
-    description: "Return the next day and answer a question correctly.",
-    xp: 5,
+    description: "Returned and answered a question correctly.",
+    nectar: 1,
   },
   {
     id: "trueBee",
     name: "True Bee",
-    description: "Complete all 3 previous missions.",
-    xp: 5,
+    description: "Completed all missions.",
+    nectar: 1,
   },
 ];
 
@@ -38,7 +37,7 @@ const MissionsPage = () => {
 
   return (
     <div className="missions-page">
-      <button className="back-button" onClick={() => navigate("/profilepage")}>
+      <button className="nav-button" onClick={() => navigate("/profilepage")}>
         ← Back to Profile
       </button>
       <h2 className="missions-title"> Your Missions & Traits</h2>
@@ -53,7 +52,14 @@ const MissionsPage = () => {
             >
               <h3>{mission.name}</h3>
               <p>{mission.description}</p>
-              <p className="xp-reward">🎁 {mission.xp} Nectar XP</p>
+              <p className="xp-reward">
+                <img
+                  src={nectarIcon}
+                  alt="nectatIcon"
+                  className="nectar-icon"
+                />{" "}
+                {mission.nectar} Nectar{" "}
+              </p>
               {achieved ? (
                 <span className="badge-complete">✅ Completed</span>
               ) : (

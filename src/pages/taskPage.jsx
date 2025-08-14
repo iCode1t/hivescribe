@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import questions from "../data/questions";
 import { useTrait } from "../context/Traitcontext";
-import { checkMissions } from "../Utils/missionChecker";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { checkMissions } from "../Utils/missionChecker"; //work on this
 import MissionPopup from "../components/missionPopUp";
 import HiveScribeLogo from "../assets/HIVESCRIBE.png";
+import nectarIcon from "../assets/icons/nectarIcon.png";
 
 const TaskPage = () => {
   const navigate = useNavigate();
@@ -22,11 +24,18 @@ const TaskPage = () => {
 
   const { traits, setTraits, addXP, incrementQuiz } = useTrait();
   const question = questions[index];
+  const { publicKey } = useWallet();
+  const playerXP = traits.playerXP;
 
   useEffect(() => {
     setStartTime(Date.now());
   }, [index]);
-
+  const shortenAddress = (address) => {
+    if (!address) return "";
+    const str = address;
+    return `${str.slice(0, 4)}******${str.slice(-6)}`;
+  };
+  const capitalize = (s) => s?.charAt(0).toUpperCase() + s.slice(1);
   const handleSubmit = () => {
     if (input === "" && question.type === "mcq") {
       setFeedback("Please select an answer before submitting.");
@@ -54,7 +63,7 @@ const TaskPage = () => {
       }
 
       if (!hasAnsweredFirstQToday) {
-        setHasAnsweredFirstQToday(true); // First correct answer today
+        setHasAnsweredFirstQToday(true);
       }
 
       if (index === questions.length - 1) {
@@ -71,29 +80,11 @@ const TaskPage = () => {
       hasAnsweredFirstQToday: hasAnsweredFirstQToday,
     };
 
-    // const { updatedTraits, rewards } = checkMissions(traits, progressStats);
-
-    // const missionXP = rewards.reduce((sum, r) => sum + (r.xp || 0), 0);
-    // const totalXP = correct ? earnedXP + missionXP : 0;
-
-    // if (correct && totalXP > 0) {
-    //   addXP(totalXP);
-    // }
-
-    // setTraits(updatedTraits);
-
-    const missionXP = correct
-      ? checkMissions(traits, progressStats).rewards.reduce(
-          (sum, r) => sum + (r.xp || 0),
-          0
-        )
-      : 0;
-
-    const totalXP = correct ? earnedXP + missionXP : 0;
+    const totalXP = correct ? earnedXP : 0;
 
     const tempTraits = {
       ...traits,
-      nectarXP: traits.nectarXP + totalXP,
+      playerXP: traits.playerXP + totalXP,
     };
 
     const { updatedTraits, rewards } = checkMissions(tempTraits, progressStats);
@@ -130,13 +121,27 @@ const TaskPage = () => {
 
   return (
     <div className="task-container">
+      <div className="hud-profile-info">
+        <span className="profile-rank">🪜 {capitalize(traits.stage)}</span>
+        <span className="profile-wallet">
+          🔑{" "}
+          {publicKey ? shortenAddress(publicKey.toBase58()) : "Not Connected"}
+        </span>
+        <span className="profile-xp">⚡ XP: {playerXP}</span>
+        <span className="profile-nectar">
+          <p>
+            <img src={nectarIcon} alt="nectar" className="nectar-icon" />:{" "}
+            Nectar: {traits.nectar}
+          </p>
+        </span>
+      </div>
       <img
         className="hiveimage-in-task"
         src={HiveScribeLogo}
         alt="HiveScribe"
       />
-      <button onClick={() => navigate("/dashboard")} className="back-button">
-        Home
+      <button onClick={() => navigate("/dashboard")} className="nav-button">
+        🏠 Home
       </button>
 
       <div className="task-card">

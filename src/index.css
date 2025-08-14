@@ -26,6 +26,14 @@ body {
   color: #ffc107;
   margin-bottom: 1rem;
 }
+.wallet-adapter-button wallet-adapter-button-trigger {
+  background-color: #eac440;
+  color: #181511;
+}
+.wallet-adapter-button-trigger {
+  background-color: #eac440;
+  color: #181511;
+}
 
 .fallback-message {
   margin-top: 20px;
@@ -34,7 +42,7 @@ body {
   color: #4e3927;
 }
 
-.refresh-button {
+.enter-game-button {
   margin-top: 10px;
   padding: 10px 16px;
   background-color: #fdd55c;
@@ -45,29 +53,51 @@ body {
   transition: background-color 0.2s ease;
 }
 
-.refresh-button:hover {
-  background-color: #eac440;
+.enter-game-button:hover {
+  background-color: #4e3927;
+  color: #ddd;
 }
 
-/* Dashboard*/
-.to-task-page-button {
-  margin-bottom: 1rem;
-  background: #4e3927;
-  border: 1.5px solid #ffebc0;
-  color: #ffebc0;
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
+/* Dashboard And Staus card component*/
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  gap: 20px;
+}
+.hud-profile-info {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  height: 8px;
+  z-index: 1000;
+
+  background: #ffffff0d;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+
+  color: #e4c596;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
   font-size: 0.9rem;
-  transition: background 0.2s ease;
+  max-width: 300px;
 }
-.to-task-page-button:hover {
-  background: transparent;
-  color: #4e3927;
-  border: 0px;
+.nav-buttons-wrapper {
+  display: flex;
+  gap: 2rem;
 }
 
-.profile-button {
+.nav-button {
   align-self: flex-start;
   margin-bottom: 1rem;
   background: #4e3927;
@@ -80,20 +110,26 @@ body {
   transition: background 0.2s ease;
 }
 
-.profile-button:hover {
+.nav-button:hover {
   background: transparent;
   color: #e4c596;
   border: 0px;
 }
 
-.page-wrapper {
+.profile-wallet {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.stage-ladder {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 40px;
   gap: 20px;
 }
-
 .status-card {
   display: flex;
   align-items: center;
@@ -126,7 +162,7 @@ body {
   color: #a87c00;
 }
 
-.honey {
+.total-xp-placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -145,7 +181,7 @@ body {
   text-overflow: ellipsis;
 }
 
-.honey-icon {
+.nectar-icon {
   width: 16px;
   margin-right: 4px;
 }
@@ -161,11 +197,6 @@ body {
   margin: 2rem auto;
   padding: 1rem;
   text-align: center;
-}
-
-.home-button:hover {
-  background: #e0a800;
-  transform: scale(1.05);
 }
 
 .card {
@@ -209,12 +240,6 @@ body {
   color: white;
   padding: 0.3rem 0.6rem;
   border-radius: 1rem;
-}
-
-.nectar {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
 }
 
 .progress-section {
@@ -285,6 +310,49 @@ body {
 
 .view-missions-button:hover {
   background-color: transparent;
+}
+
+/* insideprofilepage */
+
+.conversion-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5em;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  background: #4e3927;
+  border: 1.5px solid #ffebc0;
+  color: #ffebc0;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.popup-close-btn:hover {
+  background: transparent;
+  color: #e4c596;
+  border: 0px;
+}
+
+.instruct-inside-con {
+  color: #f1f1ee;
+  font-size: 15px;
 }
 /* missionspage */
 .missions-page {
@@ -374,27 +442,7 @@ body {
   height: auto;
   margin-bottom: 1.5rem;
   display: block;
-  filter: drop-shadow(0 0 10px rgba(255, 223, 80, 0.3)); /* optional glow */
-}
-
-.back-button {
-  /* also used by the homebutton in profile */
-  align-self: flex-start;
-  margin-bottom: 1rem;
-  background: #4e3927;
-  border: 1.5px solid #ffebc0;
-  color: #ffebc0;
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background 0.2s ease;
-}
-
-.back-button:hover {
-  background: transparent;
-  color: #e4c596;
-  border: 0px;
+  filter: drop-shadow(0 0 10px rgba(255, 223, 80, 0.3));
 }
 
 .task-card {
@@ -525,4 +573,167 @@ body {
 
 .close-popup-button:hover {
   background-color: #6b533d;
+}
+
+/* guidspage */
+.floating-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+
+  background: #ffffff0d;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+
+  color: #f1e4d2;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.hh1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-family: "Trebuchet MS", sans-serif;
+  color: #615454;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  margin-top: 1.5rem;
+  padding-bottom: 0.3rem;
+  font-family: "Trebuchet MS", sans-serif;
+  color: #615454;
+  border-bottom: 2px solid #9b7217;
+}
+.hh3 {
+  font-family: "Trebuchet MS", sans-serif;
+  color: #615454;
+}
+
+p {
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+ul {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+ul li {
+  margin-bottom: 0.5rem;
+}
+
+.mission-list li,
+.progression-list li {
+  padding: 0.3rem 0.6rem;
+  border-left: 4px solid #f2c94c;
+  background: #fff8e1;
+  margin-bottom: 0.5rem;
+}
+
+.flow-diagram {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.flow-diagram svg {
+  max-width: 100%;
+}
+
+.community-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.community-links a {
+  text-decoration: none;
+  background: #f2c94c;
+  color: #333;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.community-links a:hover {
+  background: #e0a106;
+}
+
+.tips-list li {
+  padding-left: 1rem;
+  position: relative;
+}
+
+.tips-list li::before {
+  content: "🐝";
+  position: absolute;
+  left: -1.2rem;
+}
+
+/*PVP Page*/
+
+.pvp-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.online-title {
+  font-size: 1.5rem;
+  margin-top: 1.5rem;
+  padding-bottom: 0.3rem;
+  font-family: "Trebuchet MS", sans-serif;
+  color: #615454;
+}
+.challenge-button {
+  content: "  ";
+  margin-bottom: 1rem;
+  background: #4e3927;
+  border: 0px;
+  color: transparent;
+  height: 28px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.challenge-button:hover {
+  content: "challenge";
+  background: transparent;
+  color: #9bfa1e;
+  border: 1.5px solid #9bfa1e;
+  transition: background 0.2s ease;
+}
+
+@media (max-width: 600px) {
+  .hud-profile-info {
+    top: 0.5rem;
+    left: 1rem;
+    right: 1rem;
+    bottom: auto;
+
+    width: auto;
+    max-width: unset;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .nav-buttons-wrapper {
+    position: relative;
+    margin-top: 4.5rem;
+  }
 }

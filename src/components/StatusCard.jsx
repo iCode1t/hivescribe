@@ -1,6 +1,6 @@
 import React from "react";
 
-const StatusCard = ({ label, icon, honeyIcon, NectarXp, locked }) => {
+const StatusCard = ({ label, icon, playerXP, locked }) => {
   return (
     <div className="status-card">
       <div className="status-icon">
@@ -8,9 +8,8 @@ const StatusCard = ({ label, icon, honeyIcon, NectarXp, locked }) => {
       </div>
       <div className="status-info">
         <span className="status-label">{label}</span>
-        <div className="honey">
-          <img src={honeyIcon} alt="Honey" className="honey-icon" />
-          <span>{NectarXp}</span>
+        <div className="total-xp-placeholder">
+          <span>{playerXP}</span>
         </div>
       </div>
       <div className="lock-icon">{locked ? "🔒" : "🔓"}</div>

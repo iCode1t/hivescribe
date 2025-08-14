@@ -11,7 +11,8 @@ const stageLevels = [
 
 export const TraitProvider = ({ children }) => {
   const [traits, setTraits] = useState({
-    nectarXP: 0,
+    playerXP: 0,
+    nectar: 0,
     honey: 0,
     stage: "larva",
     quizzesCompletedToday: 0,
@@ -24,25 +25,25 @@ export const TraitProvider = ({ children }) => {
     const current = stageLevels
       .slice()
       .reverse()
-      .find((level) => traits.nectarXP >= level.minXP);
+      .find((level) => traits.playerXP >= level.minXP);
 
     if (current && current.stage !== traits.stage) {
       setTraits((prev) => ({ ...prev, stage: current.stage }));
     }
-  }, [traits.nectarXP]);
+  }, [traits.playerXP]);
 
   const addXP = (amount) => {
     setTraits((prev) => ({
       ...prev,
-      nectarXP: prev.nectarXP + amount,
+      playerXP: prev.playerXP + amount,
     }));
   };
 
-  const completeMission = (missionName, rewardXP = 0, rewardHoney = 0) => {
+  const completeMission = (missionName, rewardNectar = 0, rewardHoney = 0) => {
     if (!traits.completedMissions.includes(missionName)) {
       setTraits((prev) => ({
         ...prev,
-        nectarXP: prev.nectarXP + rewardXP,
+        nectar: prev.nectar + rewardNectar,
         honey: prev.honey + rewardHoney,
         completedMissions: [...prev.completedMissions, missionName],
       }));

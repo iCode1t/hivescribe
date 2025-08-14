@@ -8,7 +8,7 @@ export async function createProject(wallet) {
     authority: wallet.publicKey.toBase58(),
   });
 
-  console.log("🟩 Project address:", projectAddress); // 👈 ADD THIS LINE
+  console.log("🟩 Project address:", projectAddress);
 
   const result = await sendClientTransactions(client, wallet, txResponse);
   console.log("✅ Project created on-chain:", result);

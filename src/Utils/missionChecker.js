@@ -1,3 +1,4 @@
+// src/utils/missionChecker.js
 export const checkMissions = (traits, progressStats = {}) => {
   const {
     correctAnswersInARow = 0,
@@ -15,7 +16,8 @@ export const checkMissions = (traits, progressStats = {}) => {
     justAnsweredCorrectlyOnFirstTry
   ) {
     updated.completedMissions.push("hatched");
-    rewards.push({ mission: "Hatched", xp: 4 });
+    updated.nectar = (updated.nectar || 0) + 1;
+    rewards.push({ mission: "Hatched", nectar: 1 });
   }
 
   if (
@@ -23,7 +25,8 @@ export const checkMissions = (traits, progressStats = {}) => {
     correctAnswersInARow >= 5
   ) {
     updated.completedMissions.push("hotStreak");
-    rewards.push({ mission: "Hot Streak", xp: 6 });
+    updated.nectar = (updated.nectar || 0) + 1;
+    rewards.push({ mission: "Hot Streak", nectar: 1 });
   }
 
   if (
@@ -31,7 +34,8 @@ export const checkMissions = (traits, progressStats = {}) => {
     hasAnsweredFirstQToday
   ) {
     updated.completedMissions.push("loyalBee");
-    rewards.push({ mission: "Loyal Bee", xp: 5 });
+    updated.nectar = (updated.nectar || 0) + 1;
+    rewards.push({ mission: "Loyal Bee", nectar: 1 });
   }
 
   const hasAllThree =
@@ -41,12 +45,15 @@ export const checkMissions = (traits, progressStats = {}) => {
 
   if (hasAllThree && !updated.completedMissions.includes("trueBee")) {
     updated.completedMissions.push("trueBee");
-    rewards.push({ mission: "True Bee", xp: 5 });
+    updated.nectar = (updated.nectar || 0) + 1;
+    rewards.push({ mission: "True Bee", nectar: 1 });
   }
 
-  const totalXP = traits.nectarXP || 0;
+  // Stage promotions (make sure thresholds match your design)
+  const totalXP = updated.playerXP || 0;
+  const totalNectar = updated.nectar || 0;
 
-  if (updated.stage === "larva" && totalXP >= 5) {
+  if (updated.stage === "larva" && totalXP >= 5 && totalNectar >= 1) {
     updated.stage = "pupa";
     rewards.push({ stage: "Promoted to Pupa!" });
   }

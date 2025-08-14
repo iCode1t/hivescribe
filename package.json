@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@honeycomb-protocol/edge-client": "^0.0.7-beta.15",
+    "@honeycomb-protocol/hive-control": "^0.0.56",
     "@solana/wallet-adapter-base": "^0.9.27",
     "@solana/wallet-adapter-react": "^0.15.39",
     "@solana/wallet-adapter-react-ui": "^0.9.39",
@@ -20,7 +21,8 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.7.0",
-    "rollup-plugin-node-polyfills": "^0.2.1"
+    "rollup-plugin-node-polyfills": "^0.2.1",
+    "three": "^0.179.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",

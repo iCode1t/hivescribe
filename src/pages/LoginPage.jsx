@@ -38,9 +38,9 @@ const LoginPage = () => {
           </p>
           <button
             onClick={() => window.location.reload()}
-            className="refresh-button"
+            className="enter-game-button"
           >
-            🔄 Try Again / Go to Dashboard
+            Enter Game
           </button>
         </div>
       </div>
