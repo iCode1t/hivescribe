@@ -19,8 +19,8 @@ const questions = [
     options: ["Phantom", "Solflare", "MetaFire", "Backpack"],
     correctIndex: 2,
   },
-
   {
+    id: 4,
     type: "mcq",
     question: "What is a blockchain?",
     options: [
@@ -32,17 +32,20 @@ const questions = [
     correctIndex: 2,
   },
   {
+    id: 5,
     type: "mcq",
     question: "Which of these is native to the Solana blockchain?",
     options: ["Ether", "Bitcoin", "SOL", "DOGE"],
     correctIndex: 2,
   },
   {
+    id: 6,
     type: "text",
     question: "What does NFT stand for?",
     answer: "Non-Fungible Token",
   },
   {
+    id: 7,
     type: "mcq",
     question: "What's special about Solana's speed?",
     options: [
@@ -54,11 +57,13 @@ const questions = [
     correctIndex: 2,
   },
   {
+    id: 8,
     type: "text",
     question: "What is the smallest unit of SOL called?",
     answer: "Lamport",
   },
   {
+    id: 9,
     type: "mcq",
     question: "Who created Solana?",
     options: [
@@ -70,11 +75,13 @@ const questions = [
     correctIndex: 2,
   },
   {
+    id: 10,
     type: "text",
     question: "Which Solana wallet starts with 'P' and ends in 'et'?",
     answer: "Phantom",
   },
   {
+    id: 11,
     type: "mcq",
     question: "What is 'staking' in crypto?",
     options: [
@@ -86,11 +93,13 @@ const questions = [
     correctIndex: 1,
   },
   {
+    id: 12,
     type: "text",
     question: "What is the command to check your SOL balance using Solana CLI?",
     answer: "solana balance",
   },
   {
+    id: 13,
     type: "mcq",
     question:
       "Which programming language is commonly used for Solana smart contracts?",
@@ -98,28 +107,33 @@ const questions = [
     correctIndex: 1,
   },
   {
+    id: 14,
     type: "text",
     question: "What is the name of Solana’s virtual machine (SVM)?",
     answer: "Sealevel",
   },
   {
+    id: 15,
     type: "mcq",
     question: "Which of these is a Solana-based NFT marketplace?",
     options: ["Uniswap", "OpenSea", "Magic Eden", "SushiSwap"],
     correctIndex: 2,
   },
   {
+    id: 16,
     type: "text",
     question: "What does DeFi stand for?",
     answer: "Decentralized Finance",
   },
   {
+    id: 17,
     type: "mcq",
     question: "Which network is faster for transactions?",
     options: ["Bitcoin", "Ethereum", "Solana", "Polygon"],
     correctIndex: 2,
   },
   {
+    id: 18,
     type: "mcq",
     question: "What is a DAO?",
     options: [
@@ -131,11 +145,13 @@ const questions = [
     correctIndex: 1,
   },
   {
+    id: 19,
     type: "text",
     question: "Solana stores time using Proof of _____?",
     answer: "History",
   },
   {
+    id: 20,
     type: "mcq",
     question: "What's the purpose of a wallet seed phrase?",
     options: [
@@ -147,11 +163,13 @@ const questions = [
     correctIndex: 2,
   },
   {
+    id: 21,
     type: "text",
     question: "Name one use case of NFTs beyond art.",
     answer: "gaming",
   },
   {
+    id: 22,
     type: "mcq",
     question: "Which is a real Solana devnet RPC URL?",
     options: [
@@ -163,28 +181,33 @@ const questions = [
     correctIndex: 1,
   },
   {
+    id: 23,
     type: "text",
     question: "What is the Solana command to create a new keypair?",
     answer: "solana-keygen new",
   },
   {
+    id: 24,
     type: "mcq",
     question: "What's the typical block time on Solana?",
     options: ["30 seconds", "10 seconds", "0.4 seconds", "5 minutes"],
     correctIndex: 2,
   },
   {
+    id: 25,
     type: "mcq",
     question: "Which of these is a layer 1 blockchain?",
     options: ["Polygon", "Arbitrum", "Solana", "Optimism"],
     correctIndex: 2,
   },
   {
+    id: 26,
     type: "text",
     question: "What is an airdrop in Web3?",
     answer: "Free token distribution",
   },
   {
+    id: 27,
     type: "mcq",
     question:
       "Which tool is used to interact with the Solana blockchain via terminal?",
@@ -192,6 +215,7 @@ const questions = [
     correctIndex: 2,
   },
   {
+    id: 28,
     type: "text",
     question: "Name one Solana dev tool that starts with ‘A’.",
     answer: "Anchor",

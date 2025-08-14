@@ -9,6 +9,12 @@ export default function Leaderboard() {
       </button>
 
       <h2 className="section-title">Top Scorers</h2>
+      <p>
+        <em>
+          Not enough users Data to construct this leaderboard atm. This is a
+          prototype game.
+        </em>
+      </p>
       <h2 className="section-title">Top Earners</h2>
     </div>
   );

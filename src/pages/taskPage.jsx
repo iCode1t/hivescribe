@@ -3,14 +3,15 @@ import { useNavigate } from "react-router-dom";
 import questions from "../data/questions";
 import { useTrait } from "../context/Traitcontext";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { checkMissions } from "../Utils/missionChecker"; //work on this
+import { checkMissions } from "../Utils/missionChecker";
 import MissionPopup from "../components/missionPopUp";
 import HiveScribeLogo from "../assets/HIVESCRIBE.png";
 import nectarIcon from "../assets/icons/nectarIcon.png";
 
 const TaskPage = () => {
   const navigate = useNavigate();
-  const [index, setIndex] = useState(0);
+
+  const [currentQuestion, setCurrentQuestion] = useState(null);
   const [input, setInput] = useState("");
   const [feedback, setFeedback] = useState("");
   const [showNext, setShowNext] = useState(false);
@@ -22,14 +23,34 @@ const TaskPage = () => {
   const [hasSkipped, setHasSkipped] = useState(false);
   const [hasAnsweredFirstQToday, setHasAnsweredFirstQToday] = useState(false);
 
-  const { traits, setTraits, addXP, incrementQuiz } = useTrait();
-  const question = questions[index];
+  const {
+    traits,
+    setTraits,
+    addXP,
+    incrementQuiz,
+    addCorrectlyAnsweredQuestionId,
+  } = useTrait();
   const { publicKey } = useWallet();
   const playerXP = traits.playerXP;
 
+  const getNextQuestion = () => {
+    const availableQuestions = questions.filter(
+      (q) => !traits.correctlyAnsweredQuestions.includes(q.id)
+    );
+
+    if (availableQuestions.length === 0) {
+      return null;
+    }
+
+    const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+    return availableQuestions[randomIndex];
+  };
+
   useEffect(() => {
+    setCurrentQuestion(getNextQuestion());
     setStartTime(Date.now());
-  }, [index]);
+  }, [traits.correctlyAnsweredQuestions]);
+
   const shortenAddress = (address) => {
     if (!address) return "";
     const str = address;
@@ -37,16 +58,17 @@ const TaskPage = () => {
   };
   const capitalize = (s) => s?.charAt(0).toUpperCase() + s.slice(1);
   const handleSubmit = () => {
-    if (input === "" && question.type === "mcq") {
+    if (input === "" && currentQuestion.type === "mcq") {
       setFeedback("Please select an answer before submitting.");
       return;
     }
 
     let correct = false;
-    if (question.type === "mcq") {
-      correct = parseInt(input, 10) === question.correctIndex;
-    } else if (question.type === "text") {
-      correct = input.trim().toLowerCase() === question.answer.toLowerCase();
+    if (currentQuestion.type === "mcq") {
+      correct = parseInt(input, 10) === currentQuestion.correctIndex;
+    } else if (currentQuestion.type === "text") {
+      correct =
+        input.trim().toLowerCase() === currentQuestion.answer.toLowerCase();
     }
 
     const endTime = Date.now();
@@ -66,9 +88,7 @@ const TaskPage = () => {
         setHasAnsweredFirstQToday(true);
       }
 
-      if (index === questions.length - 1) {
-        incrementQuiz();
-      }
+      addCorrectlyAnsweredQuestionId(currentQuestion.id);
     } else {
       setCorrectAnswersInARow(0);
     }
@@ -101,21 +121,22 @@ const TaskPage = () => {
   };
 
   const handleNext = () => {
-    setIndex((prev) => prev + 1);
     setInput("");
     setFeedback("");
     setShowNext(false);
     setMissionRewards([]);
     setHasSkipped(false);
+    setCurrentQuestion(getNextQuestion());
   };
 
   const handleSkip = () => {
     setHasSkipped(true);
     setCorrectAnswersInARow(0);
-    handleNext();
+
+    setCurrentQuestion(getNextQuestion());
   };
 
-  if (!question) {
+  if (!currentQuestion) {
     return <h2 style={{ textAlign: "center" }}>🎉 All tasks completed!</h2>;
   }
 
@@ -145,11 +166,11 @@ const TaskPage = () => {
       </button>
 
       <div className="task-card">
-        <h2>{question.question}</h2>
+        <h2>{currentQuestion.question}</h2>
 
-        {question.type === "mcq" && (
+        {currentQuestion.type === "mcq" && (
           <ul>
-            {question.options.map((option, i) => (
+            {currentQuestion.options.map((option, i) => (
               <li key={i}>
                 <label>
                   <input
@@ -166,7 +187,7 @@ const TaskPage = () => {
           </ul>
         )}
 
-        {question.type === "text" && (
+        {currentQuestion.type === "text" && (
           <input
             type="text"
             value={input}

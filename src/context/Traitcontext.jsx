@@ -10,15 +10,28 @@ const stageLevels = [
 ];
 
 export const TraitProvider = ({ children }) => {
-  const [traits, setTraits] = useState({
-    playerXP: 0,
-    nectar: 0,
-    honey: 0,
-    stage: "larva",
-    quizzesCompletedToday: 0,
-    completedMissions: [],
-    unlockedTraits: [],
-    hasAnsweredFirstQToday: false,
+  const [traits, setTraits] = useState(() => {
+    try {
+      const savedTraits = localStorage.getItem("hivescribe-traits");
+
+      if (savedTraits) {
+        return JSON.parse(savedTraits);
+      }
+    } catch (error) {
+      console.error("Failed to load traits from localStorage", error);
+    }
+
+    return {
+      playerXP: 0,
+      nectar: 0,
+      honey: 0,
+      stage: "larva",
+      quizzesCompletedToday: 0,
+      completedMissions: [],
+      unlockedTraits: [],
+      hasAnsweredFirstQToday: false,
+      correctlyAnsweredQuestions: [],
+    };
   });
 
   useEffect(() => {
@@ -31,6 +44,14 @@ export const TraitProvider = ({ children }) => {
       setTraits((prev) => ({ ...prev, stage: current.stage }));
     }
   }, [traits.playerXP]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("hivescribe-traits", JSON.stringify(traits));
+    } catch (error) {
+      console.error("Failed to save traits to localStorage", error);
+    }
+  }, [traits]);
 
   const addXP = (amount) => {
     setTraits((prev) => ({
@@ -50,6 +71,21 @@ export const TraitProvider = ({ children }) => {
     }
   };
 
+  const addCorrectlyAnsweredQuestionId = (questionId) => {
+    setTraits((prev) => {
+      if (!prev.correctlyAnsweredQuestions.includes(questionId)) {
+        return {
+          ...prev,
+          correctlyAnsweredQuestions: [
+            ...prev.correctlyAnsweredQuestions,
+            questionId,
+          ],
+        };
+      }
+      return prev;
+    });
+  };
+
   const incrementQuiz = () => {
     setTraits((prev) => ({
       ...prev,
@@ -65,6 +101,7 @@ export const TraitProvider = ({ children }) => {
         addXP,
         completeMission,
         incrementQuiz,
+        addCorrectlyAnsweredQuestionId,
       }}
     >
       {children}
