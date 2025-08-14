@@ -170,8 +170,8 @@ export default function Guides() {
         <section className="guide-section">
           <h2 className="section-title">Community & Support</h2>
           <div className="community-links">
-            <a href="#">GitHub</a>
-            <a href="#">Twitter</a>
+            <a href="https://github.com/iCode1t/hivescribe.git">GitHub</a>
+            <a href=" https://x.com/big_ola_?s=21">Twitter</a>
           </div>
         </section>
       </main>
