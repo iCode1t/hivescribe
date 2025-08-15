@@ -57,7 +57,7 @@ Players evolve through the stages of a bee's lifecycle by answering blockchain-t
 - Blockchain: Solana
 - Protocol: Honeycomb Protocol for on-chain traits and missions
 - Wallets: Solana Wallet Adapter (Phantom)
-- Styling: Custom CSS and modern React components
+- Styling: ThreeJS, Custom CSS and modern React components
 
 ---
 
