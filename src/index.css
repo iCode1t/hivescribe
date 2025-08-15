@@ -5,6 +5,11 @@ body {
   color: #fff;
 }
 
+a {
+  color: #f1e4d2;
+  text-decoration: none;
+}
+
 /* loginpage */
 .loginPage {
   display: flex;
@@ -678,6 +683,9 @@ ul li {
   max-width: 400px;
   margin: 2rem auto;
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .online-title {

@@ -87,7 +87,6 @@ const Dashboard = () => {
         </button>
       </div>
       <div className="stage-ladder">
-        {/* HIVE */}
         <StatusCard
           label="HIVE"
           icon={Hive}
@@ -95,7 +94,6 @@ const Dashboard = () => {
           locked={isLocked("hive")}
         />
 
-        {/* WORKER BEE */}
         <StatusCard
           label="WORKER BEE"
           icon={WorkerBee}
@@ -103,7 +101,6 @@ const Dashboard = () => {
           locked={isLocked("worker")}
         />
 
-        {/* PUPA */}
         <StatusCard
           label="PUPA"
           icon={Pupa}
@@ -111,7 +108,6 @@ const Dashboard = () => {
           locked={isLocked("pupa")}
         />
 
-        {/* LARVA */}
         <StatusCard
           label="LARVA"
           icon={larva}
