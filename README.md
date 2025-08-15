@@ -99,6 +99,12 @@ Make Sure to connect a solana wallet on devnet(Preferrable Phantom)
 
 ---
 
+## Demo
+
+![Demo of My Project](src/assets/HiveScribeDem.gif)
+
+## This GIF shows a quick demo of some features.
+
 ## 📂 Project Structure
 
 Created by icode1t
