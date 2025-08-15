@@ -27,7 +27,7 @@ Built for the Superteam Nigeria x Honeycomb Protocol Bounty.
 
 ---
 
-## Core Features (At the time of submission)
+## Core Features
 
 ✅ **Solana Wallet Connection**  
 ✅ **Dashboard Progression System** (with XP/Nectar earned from missions)  
@@ -101,7 +101,7 @@ Make Sure to connect a solana wallet on devnet(Preferrable Phantom)
 
 ## Demo
 
-![Demo of My Project](src/assets/HiveScribeDem.gif)
+![Demo of My Project](src/assets/HiveScribeDemoo.mp4)
 
 ## This GIF shows a quick demo of some features.
 
