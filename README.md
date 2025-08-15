@@ -1,111 +1,103 @@
 # HIVESCRIBE
 
-A Progressive Quiz Game on Solana
-
-Built for the Superteam Nigeria x Honeycomb Protocol Bounty.
-
 ![HIVESCRIBE Banner](./HIVESCRIBE.png)
 
-## **Built for the Superteam Nigeria x Honeycomb Protocol Bounty**
+## **A Progressive On-Chain Quiz Game Built for the Superteam Nigeria Bounty**
 
-**HIVESCRIBE** is a replayable progression based single player quizz game where players evolve through the **bee lifecycle**. It leverage the HoneyComb Protocol even though as it is not a full rpg game, to track player traits, reward mission completion, and evolve through on-chain reward mechanics. It combine the concept of wallet identity, mission logic, and on-chain progression into a unified gameplay loop.
+**HIVESCRIBE** is a replayable, single-player quiz game that leverages the Honeycomb Protocol to create a replayable, progression-based gameplay loop built around the
+**bee lifecycle**. By integrating on-chain traits, missions, and player evolution, we demonstrate how the Honeycomb Protocol can be used as the **core engine for game mechanics and player identity on Solana**.
 
-## Game Concept
+## 🐝 The Gameplay Loop: Larva to Hive
 
---- Grow from **Larva to Hive** — by answering blockchain themed questions.
---- Earn **XP** stored on-chain using the **Honeycomb Protocol** for each correct question. And climb up each stages as your XP threshold changes
---- Complete Missions and get th **Nectar**
---- XP can also be converted to Nectar and a stage in the game.
+Players evolve through the stages of a bee's lifecycle by answering blockchain-themed questions. The game tracks their progress entirely on-chain.
 
-### Stages:
+- Larva (0 XP): The starting stage.
 
-- **Larva** (0 XP)
-- **Pupa** (8 XP)
-- **Worker Bee** (16 XP)
-- **Hive** (30 XP)
-- **Honey** (Final stage, then you unlock competitive gameplay)
+- Pupa (8 XP): Players begin to form their identity.
+
+- Worker Bee (16 XP): Ready to collect resources.
+
+- Hive (30 XP): The final stage, where players can mint their earned Honey.
 
 ---
 
-## Core Features
+## Core progression:
 
-✅ **Solana Wallet Connection**  
-✅ **Dashboard Progression System** (with XP/Nectar earned from missions)  
-✅ **On-chain Missions** via Honeycomb Protocol  
-✅ **Trait Display** (XP and mission completion status)  
-✅ **Profile Page** with accurate progression bar  
-✅ **Mission Page** displaying completed missions
+**Earn XP:** Players gain **XP** for each correct answer. This XP is stored on-chain using the Honeycomb Protocol and determines their current stage.
 
----
+**Complete Missions:** Answering all questions in a given mission rewards players with Nectar.
 
-## Features Planned but Not Yet Implemented
+**Convert XP to Nectar:** Once a player reaches the Hive stage, they can convert their earned XP into Nectar.
 
-- XP-to-Nectar and Nectar-to-Honey conversions
-- Competitive "Honey" stage where players battle with their earned Honey jars
-- Full mission reward logic tied to question answering
-- Leaderboards and multiplayer mechanics
+**Mint Honey:** With enough Nectar, players can mint a final, collectible Honey NFT, signifying their completion of the lifecycle and unlocking competitive features.
 
 ---
+
+## ✨ Implemented Features (MVP)
+
+- ✅ Solana Wallet Connection: Seamlessly connect with Phantom Wallet on Solana Devnet.
+- ✅ On-chain Trait Tracking: Uses Honeycomb Protocol to store and display player XP and mission completion status.
+- ✅ Dynamic Progression Bar: A visual progress bar on the profile page reflects the player's XP and evolution stage.
+- ✅ Interactive Missions: A dedicated mission page displays completed and upcoming missions.
+- ✅ XP to Nectar Conversion: A functional mock-up on the profile page allows players at the Hive stage to convert XP to Nectar.
+- ✅ Mock NFT Minting: A mock-up of the "Mint Honey" feature demonstrates the final reward loop, complete with loading and success states.
+- ✅ Mock Duel page
+
+## 🚀 Future Roadmap
+
+- Competitive duel with various games for players to battle with their minted Honey NFTs
+- Full mission reward logic tied to the Honeycomb Protocol's on-chain data.
+- Global leaderboards and multiplayer mechanics.
 
 ## Why This Project Matters
 
-HiveScribe shows how **Honeycomb Protocol** can be used beyond simplifying backend tracking for games on the solana blockchain, it becomes a _core part of game mechanics_:
+HiveScribe shows how **Honeycomb Protocol** can be used beyond simplifying backend tracking for games on the solana blockchain, it becomes a core part of game mechanics:
 
 - Missions define progress
-- Traits power stage evolution
 - All actions can be linked to player identity on-chain.
 
 ---
 
-## Tech Stack so far
+## 🔧 Tech Stack so far
 
-- **Solana Wallet Adapter (Phantom)**
-- **Honeycomb Protocol** for missions and traits
-- **React + Vite** for the frontend
-- **LocalStorage** for dev-mode caching
-  integration targets: Verxio, Solana Pay.
-
----
-
-## Submission Note!
-
-**Why did i Submit this Now?**
-The submission page states that winners will be announced **July 30**, but also shows a confusing count down timer. Rather than risk missing the judging deadline, I'm submitting this MVP now to ensure this concept of gameplay gets reviewed.
+- Frontend: React + Vite
+- Blockchain: Solana
+- Protocol: Honeycomb Protocol for on-chain traits and missions
+- Wallets: Solana Wallet Adapter (Phantom)
+- Styling: Custom CSS and modern React components
 
 ---
 
-## Getting Started (Dev Mode)
+## 🎬 Demo
+
+![Demo of My Project](src/assets/HiveScribeDemoo.mp4)
+
+This video shows a quick demo of some of the features.
+
+## 💻 Getting Started (For Developers)
+
+To run HiveScribe locally, follow these steps:
 
 ```bash
 git clone https://github.com/iCode1t/hivescribe.git
-cd BeeRank
+cd hivescribe
 npm install
 npm run dev
+
 ```
 
 ---
 
-## **How to Start Play**
+## 🎮 **How to Play**
 
-Make Sure to connect a solana wallet on devnet(Preferrable Phantom)
-
-1. **Connect Wallet** — Players sign in with Phantom Wallet on Solana Devnet.
-2. **Complete Tasks** — Answer Questions
-3. **Earn Reward** — Gain XP for each correct answer. And Nectar when you complete a mission.
-4. **Evolve** — Reach new lifecycle stages:
-5. **Daily Streak** — Login daily for +50 XP with Verxio.
-6. **Mint Honey Scroll** — Final NFT minted for 0.01 SOL using Solana Pay.
-7. **Compete** — Check your rank on the Hive Board leaderboard.
+1.  **Connect Wallet**: Start by connecting your Phantom Wallet on Solana Devnet.
+2.  **Answer Questions**: Navigate to the missions page and answer the questions to earn XP.
+3.  **Evolve**: Watch your stage evolve as your XP increases.
+4.  **Mint Honey**: Once you reach the Hive stage, go to your profile page to mint your exclusive Honey NFT.
 
 ---
 
-## Demo
+## 👨‍💻Created by icode1t
 
-![Demo of My Project](src/assets/HiveScribeDemoo.mp4)
-
-## This GIF shows a quick demo of some features.
-
-## 📂 Project Structure
-
-Created by icode1t
-Twitter: https://x.com/big_ola_?s=21
+- iCode1t
+- Twitter: https://x.com/big_ola_?s=21
