@@ -4,6 +4,7 @@ body {
   background-color: #181511;
   color: #fff;
 }
+
 /* loginpage */
 .loginPage {
   display: flex;
@@ -39,7 +40,7 @@ body {
   margin-top: 20px;
   text-align: center;
   font-size: 0.95rem;
-  color: #4e3927;
+  color: #fff;
 }
 
 .enter-game-button {
@@ -612,11 +613,6 @@ body {
 .hh3 {
   font-family: "Trebuchet MS", sans-serif;
   color: #615454;
-}
-
-p {
-  line-height: 1.6;
-  margin-bottom: 1rem;
 }
 
 ul {

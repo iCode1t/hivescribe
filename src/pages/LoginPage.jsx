@@ -33,8 +33,8 @@ const LoginPage = () => {
 
         <div className="fallback-message">
           <p>
-            If you're not redirected after connecting your wallet, don't worry!
-            Sometimes your wallet needs a little nudge.
+            {" "}
+            <em> (Use this enter game button only after connecting wallet)</em>
           </p>
           <button
             onClick={() => window.location.reload()}
