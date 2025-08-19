@@ -63,8 +63,8 @@ Players evolve through the stages of a bee's lifecycle by answering blockchain-t
 
 # 🎬 Demo
 
-![Demo of My Project](src/assets/HiveScribeDemoo.mp4)
-
+![Demo of My Project](src/assets/HiveScribeDem.gif)
+**https://youtu.be/BkwTW78lSzU**
 This video shows a quick demo of some of the features.
 
 # 💻 Getting Started (For Developers)
